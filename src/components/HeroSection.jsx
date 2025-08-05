@@ -1,6 +1,10 @@
+import { useEffect } from "react";
 
 
 function HeroSection() {
+
+
+    
 
     return (
 

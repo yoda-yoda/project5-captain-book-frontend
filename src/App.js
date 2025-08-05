@@ -1,11 +1,15 @@
 import logo from './logo.svg';
 // import './App.css';
+import { Route } from 'react-router-dom';
+import { Routes } from 'react-router-dom';
+
 import { useLayoutEffect } from 'react';
 import MainHeader from './components/MainHeader.jsx';
 import MainPage from './pages/MainPage.jsx';
 import MainFooter from './components/MainFooter.jsx';
 import PreLoader from './components/PreLoader.jsx';
 import ScrollTop from './components/ScrollTop.jsx';
+import ServicesSection from './components/ServicesSection.jsx'
 
 // <!-- Vendor CSS Files -->
 import './styles/aos.css';
@@ -17,7 +21,6 @@ import './styles/ServicesSection.css'
 
 // <!-- Main CSS File -->
 import './styles/main.css';
-
 
 
 
@@ -39,19 +42,13 @@ function App() {
 
   return (
     <>
-      
       <MainHeader />
-
       <MainPage />
-
       <MainFooter />
-
       <ScrollTop />
-
       <PreLoader />
+    </>
 
-
-    </>)
-};
+    )};
 
 export default App;

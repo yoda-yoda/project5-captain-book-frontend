@@ -8,6 +8,7 @@ function MainPage() {
 
     return (
 
+        
         <main className="main">
             <HeroSection/>
             <ServicesSection/>
