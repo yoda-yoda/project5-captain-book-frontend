@@ -1,8 +1,7 @@
-import { data, useNavigate } from "react-router-dom";
 import CalendarView from "./CalendarView.jsx";
+import Loading from "../components/Loading.jsx"
 
-
-function CalendarHome({fetchData}) {
+function CalendarHome({ fetchData, loaded, error }) {
 
     return (
         <>
@@ -18,7 +17,19 @@ function CalendarHome({fetchData}) {
 
                     <div className="container contents">
 
-                        <CalendarView fetchData={fetchData}/>
+                        
+
+
+                        {!loaded && <Loading/> }
+
+
+                        {/* loaded = true 이면서 정상이어야 렌더링*/}
+                        {loaded && !error && <CalendarView fetchData={fetchData} /> }
+
+
+                        {/* loaded = true 이면서 에러가 렌더링 */}
+                        {loaded && error && <>에러남.에러남에러남에러남에러남 테스트중.</>}
+
 
 
                         {/* {location.pathname === `/calendar/${id}/item` &&
