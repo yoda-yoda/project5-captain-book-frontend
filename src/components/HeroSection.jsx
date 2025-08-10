@@ -8,7 +8,7 @@ function HeroSection({startBtnHandlerInRef}) {
         /* <!-- Hero Section --> */
         <section id="hero" className="hero section dark-background">
 
-            <img src="img/hero-bg.jpg" alt="" data-aos="fade-in" />
+            <img src="/img/hero-bg.jpg" alt="" data-aos="fade-in" />
 
             <div className="container text-center" data-aos="fade-up" data-aos-delay="100">
                 <div className="row justify-content-center">

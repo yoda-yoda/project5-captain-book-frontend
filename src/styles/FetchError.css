@@ -1,6 +1,4 @@
-
-
-.container.contents {
+.container.calendar-contents {
 
     min-height: 500px;
 
@@ -9,8 +7,12 @@
     align-items: center;
 
     box-sizing: border-box;
-    margin-top: 150px;
-    
+    margin-top: 0px;
 
 }
 
+.error-message {
+
+    margin-top: 150px;
+
+}

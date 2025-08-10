@@ -12,7 +12,7 @@ function AboutSection() {
                 <div className="row gy-4">
 
                     <div className="col-lg-6 position-relative d-flex align-items-center order-lg-last" data-aos="fade-up" data-aos-delay="200">
-                        <img src="assets/img/about.jpg" className="img-fluid flex-shrink-0" alt="" />
+                        <img src="/img/about.jpg" className="img-fluid flex-shrink-0" alt="" />
                         <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" className="glightbox pulsating-play-btn"></a>
                     </div>
 

@@ -11,7 +11,6 @@ import './styles/aos.css';
 import './styles/bootstrap.min.css';
 import './styles/glightbox.min.css';
 import './styles/swiper-bundle.min.css';
-import './styles/ServicesSection.css'
 // import './styles/bootstrap-icons.css';
 
 // <!-- Main CSS File -->
@@ -23,17 +22,20 @@ import './styles/Loading.css'
 
 function App() {
 
+  console.log("App 실행")
+
+
+
   window.addEventListener('load', () => {
     window.scrollTo(0, 0);
   });
 
+
   useLayoutEffect(() => {
     const script = document.createElement('script');
-    script.src = './js/main.js';
+    script.src = '/js/main.js';
     script.async = true;
     document.body.appendChild(script);
-    window.history.pushState(null, '', '/');
-
   }, []);
 
 

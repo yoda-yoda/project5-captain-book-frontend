@@ -1,11 +1,12 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom'
+
+import '../styles/CalendarView.css'
 
 
-
-function CalendarView({fetchData}) {
+function CalendarView({ fetchData }) {
 
     // console.log('CalendarView에 넘어온 fetchData (json 자체)', fetchData)
-    
+
     const calendarResponseDtoList = fetchData.calendarResponseDtoList;
     const calendarTotalSum = fetchData.calendarTotalSum;
     // console.log('CalendarView에 넘어온 calendarResponseDtoList',calendarResponseDtoList)
@@ -13,10 +14,12 @@ function CalendarView({fetchData}) {
 
     return (
         <>
-            <div className="calendar-home-container">
-
-                <div className="calendar-create-btn-container">
-                    <a href="/create" className="calendar-create-btn"> 새 달력 추가 </a>
+            <div className="calendar-home-container" data-aos="fade-up">
+                {/* {location.pathname === `/calendar/${id}/item` &&
+             <CalendarHome calendarResponseDtoList={fetchData.calendarResponseDtoList} calendarTotalSum={data.calendarTotalSum} />}
+            */}
+                <div className="calendar-create-btn-container" >
+                    <Link to="/create" className="calendar-create-btn">새 달력 추가</Link>
                 </div>
 
 

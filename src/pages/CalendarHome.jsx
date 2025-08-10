@@ -1,10 +1,16 @@
 import CalendarView from "./CalendarView.jsx";
 import Loading from "../components/Loading.jsx"
+import '../styles/CalendarHome.css'
+
 
 function CalendarHome({ fetchData, loaded, error }) {
 
+    console.log("CalendarHome 실행")
+
     return (
         <>
+            
+
             {/* <!-- Section Title --> */}
             <div className="container section-title" data-aos="fade-up">
                 <h2> 달력 </h2>
@@ -15,26 +21,16 @@ function CalendarHome({ fetchData, loaded, error }) {
             <div className="container">
                 <div className="row gy-4">
 
-                    <div className="container contents">
+                    <div className="container calendar-contents">
 
-                        
+                        {/* lodaing 중 */}
+                        {!loaded && <Loading />}
 
+                        {/* lodaing 중 (혹시 navigator로 /home/error 로 넘어가기 전에 이곳으로 렌더링됐다면 잠시 로딩하기 )*/}
+                        {loaded && error && <Loading />}
 
-                        {!loaded && <Loading/> }
-
-
-                        {/* loaded = true 이면서 정상이어야 렌더링*/}
-                        {loaded && !error && <CalendarView fetchData={fetchData} /> }
-
-
-                        {/* loaded = true 이면서 에러가 렌더링 */}
-                        {loaded && error && <>에러남.에러남에러남에러남에러남 테스트중.</>}
-
-
-
-                        {/* {location.pathname === `/calendar/${id}/item` &&
-             <CalendarHome calendarResponseDtoList={fetchData.calendarResponseDtoList} calendarTotalSum={data.calendarTotalSum} />}
-            */}
+                        {/* loaded = true, error =false 이어야 렌더링*/}
+                        {loaded && !error && <CalendarView fetchData={fetchData} />}
 
 
                     </div>

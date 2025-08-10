@@ -5,18 +5,20 @@ import StatsSection from "../components/StatsSection";
 import ServicesSection from "../components/ServicesSection";
 
 
-
 function MainPage() {
+console.log("MainPage 실행")
 
-    const startBtnHandlerInRef = useRef( () => {} );
+    const startBtnHandlerInRef = useRef(() => { });
 
     return (
-        
+
         <main className="main">
-            <HeroSection startBtnHandlerInRef={startBtnHandlerInRef}/>
-            <ServicesSection startBtnHandlerInRef={startBtnHandlerInRef}/>
-            <AboutSection/>
-            <StatsSection/>
+
+            <HeroSection startBtnHandlerInRef={startBtnHandlerInRef} />
+            <ServicesSection startBtnHandlerInRef={startBtnHandlerInRef} />
+            <AboutSection />
+            <StatsSection />
+
         </main>
 
     )
