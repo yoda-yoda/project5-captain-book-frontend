@@ -5,7 +5,8 @@ import '../styles/CalendarHome.css'
 
 function CalendarHome({ fetchData, loaded, error }) {
 
-    console.log("CalendarHome 실행")
+
+    console.log("CalendarHome 실행");
 
     return (
         <>
@@ -31,7 +32,6 @@ function CalendarHome({ fetchData, loaded, error }) {
 
                         {/* loaded = true, error =false 이어야 렌더링*/}
                         {loaded && !error && <CalendarView fetchData={fetchData} />}
-
 
                     </div>
 

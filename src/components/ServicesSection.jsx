@@ -11,24 +11,16 @@ function ServicesSection({ startBtnHandlerInRef }) {
   console.log("ServicesSection 호출됨", new Date().toISOString());
 
   const servicesSection = useRef(null);
-
-
   const navigator = useNavigate();
   const location = useLocation();
 
-  const handleOnClick = async function (id) {
-    // navigator(`/calendar/${id}/item`);
-    // const url = location.pathname;
-    // await fetchHandler(url)
-  };
-
-
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
+  const [catchFlag, setCatchFlag] = useState(false);
   const [errorResInstance, setErrorResInstance] = useState({
-        status: 0,
-        statusText:""
-    });
+    status: 0,
+    statusText: ""
+  });
 
   const [fetchData, setFetchData] = useState({
     calendarResponseDtoList: [],
@@ -36,9 +28,17 @@ function ServicesSection({ startBtnHandlerInRef }) {
   });
 
 
+    const handleOnClick = async function (id) {
+    // navigator(`/calendar/${id}/item`);
+    // const url = location.pathname;
+    // await fetchHandler(url)
+  };
+
+
+
   const fetchHandler = useCallback(async (url) => {
 
-    console.log("fetchHandler 실행됨");
+    console.log("fetchHandler 내부 실행됨");
     console.log("url: ", url);
 
 
@@ -51,7 +51,6 @@ function ServicesSection({ startBtnHandlerInRef }) {
       const resJson = await res.json()
       // 이때 혹시 resJson이 캡처안되는지 체크하기 
       setFetchData(resJson)
-      // 테스트중=> 여기에 loaded = true로 바꾸는 로직을 넣어야함.
       setLoaded(true);
       setError(false);
     }
@@ -63,17 +62,65 @@ function ServicesSection({ startBtnHandlerInRef }) {
       setError(true);
       setErrorResInstance(resObject);
 
+
+      // 에러가 발생했을때만 변경하는 상태값.
+      // 이것을 이용하면 useLayoutEffect 로 error 발생을 체크한뒤 "/home/error"로 보내는것이 가능하고,
+      // path가 바뀌어서 useLayoutEffect의 [location.key]로 다시 체크될때 무한루프에 빠지지 않도록하는 구현이 가능하다. 
+      setCatchFlag((catchFlag) => !catchFlag)
+
       console.log("catch 문의 네비 실행 직후")
       return;
     }
-    console.log("fetchHandler 정상종료");
+    console.log("fetchHandler 내부 완전히 정상종료(fetch 응답 성공 일때) ");
 
   }, []);
 
 
-  const startBtnHandler = useCallback(async () => {
 
-    console.log("1. startBtnHandler 시작")
+  useLayoutEffect(() => {
+    startBtnHandlerInRef.current = () => {
+      startBtnHandler();
+    };
+
+  }, []);
+
+
+  // 재실행될때마다 fetch 대비해서 나중에 의존성 배열 등 성능 개선해보기
+  useLayoutEffect(() => {
+    if (servicesSection.current.style.display === 'block' &&
+      window.location.pathname === "/home" && !loaded) {
+      console.log("serviceSection 동기코드중 if (window.location.pathname === /home 실행")
+      fetchHandler(window.location.pathname);
+    } else if (servicesSection.current.style.display === 'block' &&
+      window.location.pathname === "/home" && loaded) {
+      setLoaded(false);
+      setError(false);
+      fetchHandler(window.location.pathname);
+    }
+
+  }, [location.key])
+
+
+
+  // 이 useLayoutEffect는 [catchFlag] 의존성배열이(catch문 안에서만 set하는 값이)바뀔때만 작동한다.
+  // 즉 navigator("/home/error")로 리렌더링이 발생되더라도 if문 체크는 위의 useLayoutEffect에서 체크되고,
+  // 위의 함수 안에선 에러에 해당하는 if문이 없기때문에 무시되어 무한루프에 빠지지않도록 하였다. 
+  useLayoutEffect(() => {
+    if (loaded && error) {
+      navigator("/home/error");
+    }
+  }, [catchFlag])
+
+
+
+
+  const startBtnHandler = useCallback(() => {
+
+    console.log("1. startBtnHandler 함수 시작")
+
+    if (servicesSection.current.style.display === 'none') {
+      servicesSection.current.style.display = 'block';
+    }
 
     // url변경함.
     navigator(`/home`);
@@ -81,74 +128,8 @@ function ServicesSection({ startBtnHandlerInRef }) {
 
     // 자동 스크롤
     servicesSection.current.scrollIntoView({ behavior: 'smooth' });
-    await fetchHandler(window.location.pathname);
-    console.log("7. startBtnHandler 정상종료")
 
   }, []);
-
-
-
-  useLayoutEffect(() => {
-    console.log("useLayoutEffect 1 실행")
-
-    if (window.location.pathname == "/home" && loaded) {
-      setLoaded(false);
-      setError(false);
-    }
-
-    console.log("useLayoutEffect 1 종료")
-  }, [location.key])
-
-
-  useLayoutEffect(() => {
-
-    console.log("useLayoutEffect 2 실행")
-
-    if (loaded === true && error === true ) {
-      navigator('/home/error');
-    }
-
-    console.log("useLayoutEffect 2 종료")
-  }, [error])
-
-
-
-  useLayoutEffect(() => {
-
-    if (servicesSection.current.style.display === 'block') {
-      startBtnHandlerInRef.current = startBtnHandler;
-
-      console.log("핸들러 갱신")
-
-    } else {
-
-      // 첫 로드시에만 시작 버튼의 핸들러를 할당
-      startBtnHandlerInRef.current = () => {
-        console.log("0. 첫 핸들러 시작")
-        servicesSection.current.style.display = 'block';
-
-        // 더블클릭을 빠르게 한 경우 버그를 예방하기 위해 바로 빈 함수로 초기화
-        startBtnHandlerInRef.current = () => { }
-
-        startBtnHandler();
-
-      };
-    } console.log("useLayoutEffect 종료")
-  }, [servicesSection.current]);
-
-
-
-  // useEffect(
-  //   // 나중에 이 콜백을 useCallback으로 감싸는것도 고려하기. 맨처음에만 실행할건데 계속 렌더링되니까.
-  //   () => {
-
-  //     //  visible = true로 실제 section DOM이 생기고, paint까지 되었을때 자동 스크롤을 작동 
-
-
-
-  //     console.log("useEffect 종료")
-  //   }, [error]);
-
 
 
 
