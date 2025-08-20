@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import '../styles/CalendarView.css'
 
 
-function CalendarView({ fetchData }) {
+function CalendarView({ fetchData, handleOnClick }) {
 
     // console.log('CalendarView에 넘어온 fetchData (json 자체)', fetchData)
 
@@ -47,7 +47,7 @@ function CalendarView({ fetchData }) {
                         <div> 달력을 만들어 주세요. </div>
                     }
 
-                    {/* {calendarResponseDtoList.length > 0 &&
+                    {calendarResponseDtoList.length > 0 &&
 
                         <div>
                             <table >
@@ -81,27 +81,28 @@ function CalendarView({ fetchData }) {
 
 
 
-                                        <td th:onclick="|location.href='@{/calendar/{id}/item(id=${calendarResponseDto.id})}'|">
-                                            <a th:href="@{/calendar/{id}/item(id=${calendarResponseDto.id})}" th:text="${calendarResponseDto.date}">
+                                        {/* <td onclick={console.log("hi")}>
+                                            <a href="www.google.com">
+                                                `${calendarResponseDto.date}`
                                             </a>
-                                        </td>
-
-                                        <td th:onclick="|location.href='@{/calendar/{id}/item(id=${calendarResponseDto.id})}'|">
+                                        </td> */}
+                                                            
+                                        {/* <td th:onclick="|location.href='@{/calendar/{id}/item(id=${calendarResponseDto.id})}'|">
                                             <a th:href="@{/calendar/{id}/item(id=${calendarResponseDto.id})}" th:text="${calendarResponseDto.title}">
                                             </a>
-                                        </td>
+                                        </td> */}
 
-                                        <td th:onclick="|location.href='@{/calendar/{id}/item(id=${calendarResponseDto.id})}'|">
+                                        {/* <td th:onclick="|location.href='@{/calendar/{id}/item(id=${calendarResponseDto.id})}'|">
                                             <span th:if="${calendarResponseDto.totalAmount > 0}"
                                                 th:text=" '+' + ${calendarResponseDto.totalAmount} + '원' "> 합계 </span>
 
                                             <span th:if="${calendarResponseDto.totalAmount <= 0}"
                                                 th:text="${calendarResponseDto.totalAmount} + '원' "> 합계 </span>
 
-                                        </td>
+                                        </td> */}
 
 
-                                        <td className="edit-and-delete-btn-td">
+                                        {/* <td className="edit-and-delete-btn-td">
 
                                             <button type="button" className="btn btn-link p-0 edit-btn"
                                                 title="날짜, 제목 수정"
@@ -120,7 +121,7 @@ function CalendarView({ fetchData }) {
                                                 <i className="bi bi-trash3"></i>
                                             </button>
 
-                                        </td>
+                                        </td> */}
 
 
                                     </tr>
@@ -130,7 +131,7 @@ function CalendarView({ fetchData }) {
 
                         </div>
 
-                    } */}
+                    }
 
                 </div>
 

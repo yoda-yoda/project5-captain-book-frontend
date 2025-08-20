@@ -1,15 +1,31 @@
 import { useState } from "react";
 import "../styles/CalendarCreate.css"
+import { useNavigate } from "react-router-dom";
 
 
-function CalendarCreate() {
+function CalendarCreate({navigator, fetchHandler}) {
+
+    console.log("CalendarCreate 컴포넌트 실행")
 
     const [date, setDate] = useState();
     const [title, setTitle] = useState();
-
-    const submitHandler = () => {
-
+    
+    const requestData = {
+        date: date,
+        title: title
     }
+
+    // console.log(date);
+    // console.log(title);
+
+
+
+    const submitHandler = async (e) => {
+        e.preventDefault();
+        await fetchHandler("/home", requestData);
+        navigator("/home");
+    }
+  
 
     return (
 
