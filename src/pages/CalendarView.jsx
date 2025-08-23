@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
-
+import { useRef } from 'react'
 import '../styles/CalendarView.css'
+import { Modal } from 'bootstrap';
 
-
-function CalendarView({ fetchData, handleOnClick }) {
+function CalendarView({ fetchData, handleOnClick, navigator }) {
+    console.log("calendarView 실행")
 
     // console.log('CalendarView에 넘어온 fetchData (json 자체)', fetchData)
 
@@ -11,6 +12,42 @@ function CalendarView({ fetchData, handleOnClick }) {
     const calendarTotalSum = fetchData.calendarTotalSum;
     // console.log('CalendarView에 넘어온 calendarResponseDtoList',calendarResponseDtoList)
     // console.log('CalendarView에 넘어온 calendarTotalSum', calendarTotalSum)
+
+    const editModal = useRef();
+    const deleteModal = useRef();
+
+
+    let calendarResponseDtoVariable = {};
+
+
+    const updateBtnClickHandler = (calendarResponseDto) => {
+        calendarResponseDtoVariable = calendarResponseDto
+    };
+
+    const updateNavigateHandler = (calendarResponseDtoVariable) => {
+        // const modalInstance =
+        //     (Modal.getInstance(editModal.current) ||
+        //         new Modal(editModal.current));
+        // modalInstance.hide(); 
+
+
+        // if (document.querySelectorAll(".modal-backdrop")) {
+        //     document.querySelectorAll(".modal-backdrop").
+        //         forEach(function (backdrop) {
+        //             backdrop.remove()
+        //         });
+        // }
+
+
+
+        navigator(`/calendar/update/${calendarResponseDtoVariable.id}`,
+            { state: { calendarResponseDtoVariable: calendarResponseDtoVariable } });
+
+
+    };
+
+
+
 
     return (
         <>
@@ -62,37 +99,79 @@ function CalendarView({ fetchData, handleOnClick }) {
 
                                 <tbody className="calendar-list-tbody" >
 
-                                    <tr className="calendar-enter"
 
-                                    // th:each="calendarResponseDto : ${calendarResponseDtoList}"
-                                    >
-                                        {calendarResponseDtoList.map((calendarResponseDto) => {
-                                            return (
-                                                <td key={calendarResponseDto.id}>
-                                
-                                                    <a onclick = {handleOnClick(calendarResponseDto.id)}>
+                                    {calendarResponseDtoList.map((calendarResponseDto) => {
+                                        return (
+                                            <tr className="calendar-enter" key={calendarResponseDto.id}>
+
+                                                <td>
+                                                    <a onclick={handleOnClick(calendarResponseDto.id)}>
                                                         {calendarResponseDto.date}
                                                     </a>
 
                                                 </td>
 
-                                            )
-                                        })}
+                                                <td>
+
+                                                    <a onclick={handleOnClick(calendarResponseDto.id)}>
+                                                        {calendarResponseDto.title}
+                                                    </a>
+
+                                                </td>
+
+                                                <td>
+
+                                                    <a onclick={handleOnClick(calendarResponseDto.id)}>
+                                                        {calendarResponseDto.totalAmount > 0 && `+${calendarResponseDto.totalAmount}원`}
+                                                        {calendarResponseDto.totalAmount <= 0 && `${calendarResponseDto.totalAmount}원`}
+                                                    </a>
+
+                                                </td>
+
+                                                <td className="edit-and-delete-btn-td">
+
+                                                    <button onClick={() => updateBtnClickHandler(calendarResponseDto)}
+                                                        type="button" className="btn btn-link p-0 edit-btn"
+                                                        title="날짜, 제목 수정"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editModal"
+                                                    >
+                                                        <i className="bi bi-pencil"></i>
+
+                                                    </button>
+
+
+                                                    <button type="button" className="btn btn-link p-0 delete-btn"
+                                                        title="달력 삭제"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal"
+                                                    // th:attr="data-calendar-id=${calendarResponseDto.id}"
+                                                    >
+                                                        <i className="bi bi-trash3"></i>
+                                                    </button>
+
+                                                </td>
+
+
+                                            </tr>
+
+                                        )
+                                    })}
 
 
 
-                                        {/* <td onclick={console.log("hi")}>
+                                    {/* <td onclick={console.log("hi")}>
                                             <a href="www.google.com">
                                                 `${calendarResponseDto.date}`
                                             </a>
                                         </td> */}
-                                                            
-                                        {/* <td th:onclick="|location.href='@{/calendar/{id}/item(id=${calendarResponseDto.id})}'|">
+
+                                    {/* <td th:onclick="|location.href='@{/calendar/{id}/item(id=${calendarResponseDto.id})}'|">
                                             <a th:href="@{/calendar/{id}/item(id=${calendarResponseDto.id})}" th:text="${calendarResponseDto.title}">
                                             </a>
                                         </td> */}
 
-                                        {/* <td th:onclick="|location.href='@{/calendar/{id}/item(id=${calendarResponseDto.id})}'|">
+                                    {/* <td th:onclick="|location.href='@{/calendar/{id}/item(id=${calendarResponseDto.id})}'|">
                                             <span th:if="${calendarResponseDto.totalAmount > 0}"
                                                 th:text=" '+' + ${calendarResponseDto.totalAmount} + '원' "> 합계 </span>
 
@@ -102,7 +181,7 @@ function CalendarView({ fetchData, handleOnClick }) {
                                         </td> */}
 
 
-                                        {/* <td className="edit-and-delete-btn-td">
+                                    {/* <td className="edit-and-delete-btn-td">
 
                                             <button type="button" className="btn btn-link p-0 edit-btn"
                                                 title="날짜, 제목 수정"
@@ -124,7 +203,7 @@ function CalendarView({ fetchData, handleOnClick }) {
                                         </td> */}
 
 
-                                    </tr>
+
                                 </tbody>
 
                             </table>
@@ -138,6 +217,32 @@ function CalendarView({ fetchData, handleOnClick }) {
 
             </div>
 
+
+            {/* <!-- editModal --> */}
+            <div ref={editModal}
+                className="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">달력 수정</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            달력 날짜 및 제목을 수정하시겠습니까?
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+
+                            <button
+                                onClick={() => {
+                                    updateNavigateHandler(calendarResponseDtoVariable);
+                                }}
+                                type="button" className="btn btn-primary confirm-btn" data-bs-dismiss="modal">확인</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             {/* <!-- editModal --> */}
             {/* <div className="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -163,8 +268,8 @@ function CalendarView({ fetchData, handleOnClick }) {
             </div> */}
 
 
-            {/* <!-- deleteModal --> */}
-            {/* <div className="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            {/* <!-- deleteModal -->
+            <div className="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -185,8 +290,6 @@ function CalendarView({ fetchData, handleOnClick }) {
                     </div>
                 </div>
             </div> */}
-
-
 
         </>
 

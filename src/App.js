@@ -8,7 +8,6 @@ import ScrollTop from './components/ScrollTop.jsx';
 
 // <!-- Vendor CSS Files -->
 import './styles/aos.css';
-import './styles/bootstrap.min.css';
 import './styles/glightbox.min.css';
 import './styles/swiper-bundle.min.css';
 // import './styles/bootstrap-icons.css';
@@ -24,8 +23,6 @@ function App() {
 
   console.log("App 실행")
 
-
-
   window.addEventListener('load', () => {
     window.scrollTo(0, 0);
   });
@@ -36,6 +33,7 @@ function App() {
     script.src = '/js/main.js';
     script.async = true;
     document.body.appendChild(script);
+    window.history.scrollRestoration = 'manual';
   }, []);
 
 
@@ -48,6 +46,7 @@ function App() {
       <PreLoader />
     </>
 
-    )};
+  )
+};
 
 export default App;

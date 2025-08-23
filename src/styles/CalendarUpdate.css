@@ -1,6 +1,6 @@
-.container.calendar-contents {
+.container.calendar-update-contents {
 
-    min-height: 800px;
+    min-height: 500px;
 
     display: flex;
     flex-direction: column;
@@ -9,5 +9,8 @@
     box-sizing: border-box;
     margin-top: 0px;
 
+
+
+    
 
 }

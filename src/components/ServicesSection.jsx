@@ -5,6 +5,8 @@ import FetchError from "../pages/FetchError.jsx"
 import CalendarCreate from "../pages/CalendarCreate.jsx";
 import { useLayoutEffect } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import CalendarUpdate from "../pages/CalendarUpdate.jsx"
+import "../styles/ServicesSection.css"
 
 
 function ServicesSection({ startBtnHandlerInRef }) {
@@ -47,79 +49,11 @@ function ServicesSection({ startBtnHandlerInRef }) {
 
   }, []);
 
-    const handleOnClick = async function (id) {
+  const handleOnClick = async function (id) {
     // navigator(`/calendar/${id}/item`);
     // const url = location.pathname;
     // await fetchHandler(url)
   };
-
-
-
-  // const fetchHandler = useCallback(async (url) => {
-
-  //   console.log("fetchHandler 내부 실행됨");
-  //   console.log("url: ", url);
-
-
-  //   try {
-  //     const res = await fetch(url);
-  //     if (!res.ok) {
-  //       throw res;
-  //     }
-  //     // 정상 처리 일때
-  //     const resJson = await res.json()
-  //     // 이때 혹시 resJson이 캡처안되는지 체크하기 
-  //     setFetchData(resJson)
-  //     setLoaded(true);
-  //     setError(false);
-  //   }
-  //   catch (resObject) {
-  //     console.log("catch 문 입장")
-  //     console.error(`error: [${resObject.status}, ${resObject.statusText}]`);
-
-  //     setLoaded(true);
-  //     setError(true);
-  //     setErrorResInstance(resObject);
-
-
-  //     // 에러가 발생했을때만 변경하는 상태값.
-  //     // 이것을 이용하면 useLayoutEffect 로 error 발생을 체크한뒤 "/home/error"로 보내는것이 가능하고,
-  //     // path가 바뀌어서 useLayoutEffect의 [location.key]로 다시 체크될때 무한루프에 빠지지 않도록하는 구현이 가능하다. 
-  //     setCatchFlag((catchFlag) => !catchFlag)
-
-  //     console.log("catch 문의 네비 실행 직후")
-  //     return;
-  //   }
-  //   console.log("fetchHandler 내부 완전히 정상종료(fetch 응답 성공 일때) ");
-
-  // }, []);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -155,12 +89,12 @@ function ServicesSection({ startBtnHandlerInRef }) {
           method: 'POST',
           body: JSON.stringify(requestData)
         });
-        console.log("post fetch set 완료 (너가 먼저 와야지)")
+        console.log("post fetch 정상 완료 (너가 먼저 와야지)")
         if (!res.ok) {
           throw res;
         }
 
-        
+
       }
     }
 
@@ -197,126 +131,6 @@ function ServicesSection({ startBtnHandlerInRef }) {
 
 
 
-  // const fetchPostHandler = useCallback(async (url, requestData) => {
-
-  //   console.log("fetchPostHandler 내부 실행됨");
-  //   console.log("url: ", url);
-
-  //   try {
-  //     const res = await fetch(url, {
-  //       method: 'POST',
-  //       body: JSON.stringify(requestData)
-  //     });
-  //     if (!res.ok) {
-  //       throw res;
-  //     }
-  //     // 정상 처리 일때
-  //     const resJson = await res.json()
-  //     // 이때 혹시 resJson이 캡처안되는지 체크하기 
-  //     setFetchData(resJson)
-  //     setLoaded(true);
-  //     setError(false);
-  //   }
-  //   catch (resObject) {
-  //     console.log("catch 문 입장")
-  //     console.error(`error: [${resObject.status}, ${resObject.statusText}]`);
-
-  //     setLoaded(true);
-  //     setError(true);
-  //     setErrorResInstance(resObject);
-
-
-  //     // 에러가 발생했을때만 변경하는 상태값.
-  //     // 이것을 이용하면 useLayoutEffect 로 error 발생을 체크한뒤 "/home/error"로 보내는것이 가능하고,
-  //     // path가 바뀌어서 useLayoutEffect의 [location.key]로 다시 체크될때 무한루프에 빠지지 않도록하는 구현이 가능하다. 
-  //     setCatchFlag((catchFlag) => !catchFlag)
-
-  //     console.log("catch 문의 네비 실행 직후")
-  //     return;
-  //   }
-  //   console.log("fetchPostHandler 내부 완전히 정상종료(fetch 응답 성공 일때) ");
-
-  // }, []);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // const fetchPostHandler = useCallback(async (url, requestData) => {
-
-  //     console.log("fetchPostHandler 내부 실행됨");
-  //     console.log("url: ", url);
-
-  //     try {
-  //       const res = await fetch(url, {
-  //         method: 'POST',
-  //         body: JSON.stringify(requestData)
-  //       });
-  //       if (!res.ok) {
-  //         throw res;
-  //       }
-  //       // 정상 처리 일때
-  //       const resJson = await res.json()
-  //       // 이때 혹시 resJson이 캡처안되는지 체크하기 
-  //       setFetchData(resJson)
-  //       setLoaded(true);
-  //       setError(false);
-  //     }
-  //     catch (resObject) {
-  //       console.log("catch 문 입장")
-  //       console.error(`error: [${resObject.status}, ${resObject.statusText}]`);
-
-  //       setLoaded(true);
-  //       setError(true);
-  //       setErrorResInstance(resObject);
-
-
-  //       // 에러가 발생했을때만 변경하는 상태값.
-  //       // 이것을 이용하면 useLayoutEffect 로 error 발생을 체크한뒤 "/home/error"로 보내는것이 가능하고,
-  //       // path가 바뀌어서 useLayoutEffect의 [location.key]로 다시 체크될때 무한루프에 빠지지 않도록하는 구현이 가능하다. 
-  //       setCatchFlag((catchFlag) => !catchFlag)
-
-  //       console.log("catch 문의 네비 실행 직후")
-  //       return;
-  //     }
-  //     console.log("fetchPostHandler 내부 완전히 정상종료(fetch 응답 성공 일때) ");
-
-  //   }, []);
-
-
-
-
-
 
   useLayoutEffect(() => {
     startBtnHandlerInRef.current = () => {
@@ -331,15 +145,22 @@ function ServicesSection({ startBtnHandlerInRef }) {
   // 나중에 로그인 기능넣었을때는 새로고침 시 block 유지 하도록 바꾼다면 이대로 둬야겠지만 일단 냅두기. 
   useLayoutEffect(() => {
     if (servicesSection.current.style.display === 'block' &&
-      window.location.pathname === "/home" && !loaded) {
+      window.location.pathname === "/home" && !loaded &&
+      !window.location.href.includes("#")) {
       console.log("serviceSection 동기코드중 if (window.location.pathname === /home 실행")
       fetchHandler(window.location.pathname);
+
+
+
     } else if (servicesSection.current.style.display === 'block' &&
-      window.location.pathname === "/home" && loaded) {
+      window.location.pathname === "/home" && loaded &&
+      !window.location.href.includes("#")) {
+
       setLoaded(false);
       setError(false);
       fetchHandler(window.location.pathname);
-    } 
+
+    }
 
   }, [location.key])
 
@@ -358,6 +179,16 @@ function ServicesSection({ startBtnHandlerInRef }) {
 
 
 
+  useEffect(() => {
+    if (
+      !window.location.href.includes("#") &&
+      servicesSection.current.style.display === 'block' &&
+      window.location.pathname === "/home"
+    ) {
+      servicesSection.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [location.key])
+
 
 
   return (
@@ -368,9 +199,10 @@ function ServicesSection({ startBtnHandlerInRef }) {
     <section ref={servicesSection} id="services" className="services section" style={{ display: "none" }}>
 
       <Routes>
-        <Route path="/home" element={<CalendarHome fetchData={fetchData} loaded={loaded} error={error} handleOnClick={handleOnClick}/>} />
+        <Route path="/home" element={<CalendarHome fetchData={fetchData} loaded={loaded} error={error} handleOnClick={handleOnClick} navigator={navigator} />} />
         <Route path="/home/error" element={<FetchError errorResInstance={errorResInstance} />} />
-        <Route path="/create" element={<CalendarCreate navigator={navigator} fetchHandler={fetchHandler} />} />
+        <Route path="/create" element={<CalendarCreate navigator={navigator} fetchHandler={fetchHandler} servicesSection={servicesSection} />} />
+        <Route path="/calendar/update/:calendarId" element={<CalendarUpdate navigator={navigator} location={location} fetchHandler={fetchHandler} servicesSection={servicesSection} />} />
       </Routes>
 
     </section>
