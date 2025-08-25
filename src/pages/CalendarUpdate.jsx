@@ -7,7 +7,6 @@ function CalendarUpdate({ navigator, location, fetchHandler, servicesSection }) 
     const [date, setDate] = useState();
     const [title, setTitle] = useState();
     const { calendarId } = useParams();
-    console.log("calendarId", calendarId)
 
     const updateRequestData = {
         date: date,

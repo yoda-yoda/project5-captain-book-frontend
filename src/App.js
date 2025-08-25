@@ -1,4 +1,3 @@
-// import './App.css';
 import { useLayoutEffect } from 'react';
 import MainHeader from './components/MainHeader.jsx';
 import MainPage from './pages/MainPage.jsx';
@@ -10,7 +9,6 @@ import ScrollTop from './components/ScrollTop.jsx';
 import './styles/aos.css';
 import './styles/glightbox.min.css';
 import './styles/swiper-bundle.min.css';
-// import './styles/bootstrap-icons.css';
 
 // <!-- Main CSS File -->
 import './styles/main.css';

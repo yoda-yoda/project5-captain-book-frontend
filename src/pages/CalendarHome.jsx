@@ -3,10 +3,8 @@ import Loading from "../components/Loading.jsx"
 import '../styles/CalendarHome.css'
 
 
-function CalendarHome({ fetchData, loaded, error, handleOnClick, navigator }) {
+function CalendarHome({ fetchData, loaded, error, handleOnClick, navigator, fetchHandler }) {
 
-
-    console.log("CalendarHome 실행");
 
     return (
         <>
@@ -30,7 +28,7 @@ function CalendarHome({ fetchData, loaded, error, handleOnClick, navigator }) {
                         {loaded && error && <Loading />}
 
                         {/* loaded = true, error =false 이어야 렌더링*/}
-                        {loaded && !error && <CalendarView fetchData={fetchData} handleOnClick={handleOnClick} navigator={navigator} />}
+                        {loaded && !error && <CalendarView fetchData={fetchData} handleOnClick={handleOnClick} navigator={navigator} fetchHandler={fetchHandler} />}
 
                     </div>
 

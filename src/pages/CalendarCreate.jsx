@@ -1,12 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "../styles/CalendarCreate.css"
-import { useNavigate } from "react-router-dom";
 
 
 function CalendarCreate({ navigator, fetchHandler, servicesSection }) {
-
-
-    console.log("CalendarCreate 컴포넌트 실행")
 
     const [date, setDate] = useState();
     const [title, setTitle] = useState();
@@ -15,10 +11,6 @@ function CalendarCreate({ navigator, fetchHandler, servicesSection }) {
         date: date,
         title: title
     }
-
-    // console.log(date);
-    // console.log(title);
-
 
 
     const saveSubmitBtnHandler = async (e) => {

@@ -17,13 +17,10 @@ a:visited {
 
   background-color: white;
   align-items: center;
-  /*align-items: center;*/
-  /*justify-content: center;*/
 
   width: 100%;
   height: 100%;
   min-height: 800px;
-
 
   /*border: 1px solid #ccc;*/
 }
@@ -79,9 +76,6 @@ table .calendar-list-thead th {
 }
 
 
-
-
-
 .calendar-enter:hover {
 
   transition: background-color 0.2s ease;
@@ -93,7 +87,6 @@ table .calendar-list-thead th {
 .calendar-enter td:not(.edit-and-delete-btn-td):hover {
   cursor: pointer;
 }
-
 
 
 .edit-btn {

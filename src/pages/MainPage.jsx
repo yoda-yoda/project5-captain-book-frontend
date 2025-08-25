@@ -6,7 +6,6 @@ import ServicesSection from "../components/ServicesSection";
 
 
 function MainPage() {
-console.log("MainPage 실행")
 
     const startBtnHandlerInRef = useRef(() => { });
 

@@ -9,63 +9,6 @@
     box-sizing: border-box;
     margin-top: 0px;
 
-
-
-    
-
 }
 
-
-
-/*
-
-
-.calendar-link {
-    color: navy;
-}
-
-.calendar-list-container {
-    margin-top: 50px;
-}
-
-
-.calendar-list , .calendar-list a{
-    */
-/* display: inline-block; *//*
-
-   */
-/* background: #ccc;*//*
-
-
-   color: navy;
-   text-decoration: none;
-   font-size: 15px;
-}
-
-
-.calendar-list a:hover {
-    color: blue;            */
-/* 마우스 올렸을 때 색상 *//*
-
-    */
-/*text-decoration: underline; *//*
-*/
-/* 마우스 올렸을 때만 밑줄 *//*
-
-}
-
-.calendar {
-    font-size: 40px;
-    font: bold;
-}
-
-.calendarItem-list-container {
-    margin-top: 20px;
-}
-
-.totalAmount-container {
-    margin-bottom: 50px;
-}
-
-*/
 

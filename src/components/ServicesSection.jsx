@@ -1,11 +1,9 @@
-import { useCallback, useEffect, useRef } from "react";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState, useLayoutEffect } from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import CalendarCreate from "../pages/CalendarCreate.jsx";
+import CalendarUpdate from "../pages/CalendarUpdate.jsx"
 import CalendarHome from "../pages/CalendarHome.jsx";
 import FetchError from "../pages/FetchError.jsx"
-import CalendarCreate from "../pages/CalendarCreate.jsx";
-import { useLayoutEffect } from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import CalendarUpdate from "../pages/CalendarUpdate.jsx"
 import "../styles/ServicesSection.css"
 
 
@@ -19,7 +17,6 @@ function ServicesSection({ startBtnHandlerInRef }) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
   const [catchFlag, setCatchFlag] = useState(false);
-  const [postFlag, setPostFlag] = useState(false);
   const [errorResInstance, setErrorResInstance] = useState({
     status: 0,
     statusText: ""
@@ -34,15 +31,11 @@ function ServicesSection({ startBtnHandlerInRef }) {
 
   const startBtnHandler = useCallback(() => {
 
-    console.log("1. startBtnHandler 함수 시작")
-
     if (servicesSection.current.style.display === 'none') {
       servicesSection.current.style.display = 'block';
     }
 
-    // url변경함.
     navigator(`/home`);
-    console.log("2. navi(/home) 직후");
 
     // 자동 스크롤
     servicesSection.current.scrollIntoView({ behavior: 'smooth' });
@@ -58,17 +51,17 @@ function ServicesSection({ startBtnHandlerInRef }) {
 
 
 
-  const fetchHandler = useCallback(async (url, requestData) => {
+  const fetchHandler = useCallback(async (pathname, requestData) => {
 
     console.log("fetchHandler 내부 실행됨");
-    console.log("url: ", url);
+    console.log("pathname: ", pathname);
 
 
     try {
-      // GET fetch 일때 입장(requestData가 undefined 일때)
-      if (!requestData) {
-        console.log("get fetch 입장")
-        const res = await fetch(url);
+      // /home GET fetch 일때 입장(requestData가 undefined 일때)
+      if (pathname === "/home" && !requestData) {
+        console.log("/home의 get fetch 입장")
+        const res = await fetch(pathname);
         if (!res.ok) {
           throw res;
         }
@@ -76,26 +69,41 @@ function ServicesSection({ startBtnHandlerInRef }) {
         setFetchData(resJson)
         setLoaded(true);
         setError(false);
-        console.log("get fetch set 완료 (너가 나중에 와야지)")
+        console.log("/home의 get fetch set 완료")
       }
 
-      // POST fetch 일때 입장
-      else if (requestData) {
-        console.log("post fetch 입장")
-        const res = await fetch(url, {
+      // /home 또는 /update POST fetch 일때 입장
+      else if ( (pathname === "/home" || pathname.startsWith("/calendar/update/")) &&
+        requestData) {
+        console.log("/home의 post fetch 입장")
+        const res = await fetch(pathname, {
           headers: {
             'Content-Type': 'application/json'
           },
           method: 'POST',
           body: JSON.stringify(requestData)
         });
-        console.log("post fetch 정상 완료 (너가 먼저 와야지)")
+        console.log("/home의 post fetch 정상 완료")
+        if (!res.ok) {
+          throw res;
+        }
+      }
+
+      // delete POST fetch 일때 입장
+      else if (pathname.startsWith("/calendar/delete/")) {
+        console.log("delete POST fetch 입장")
+        const res = await fetch(pathname, {
+          method: 'POST',
+        });
+        console.log("delete POST fetch 정상 완료")
         if (!res.ok) {
           throw res;
         }
 
-
       }
+
+
+
     }
 
     catch (resObject) {
@@ -144,13 +152,12 @@ function ServicesSection({ startBtnHandlerInRef }) {
   // 문제는 없지만 가독성을 위해 나중에 if문 분기 없애고 하나로 통합해도될듯. 왜냐면 새로고침하면 어차피 display가 none인 경우라면 !loaded랑 loaded로 굳이 나눌 필요가 없는듯.
   // 나중에 로그인 기능넣었을때는 새로고침 시 block 유지 하도록 바꾼다면 이대로 둬야겠지만 일단 냅두기. 
   useLayoutEffect(() => {
+
     if (servicesSection.current.style.display === 'block' &&
       window.location.pathname === "/home" && !loaded &&
       !window.location.href.includes("#")) {
-      console.log("serviceSection 동기코드중 if (window.location.pathname === /home 실행")
+
       fetchHandler(window.location.pathname);
-
-
 
     } else if (servicesSection.current.style.display === 'block' &&
       window.location.pathname === "/home" && loaded &&
@@ -180,11 +187,11 @@ function ServicesSection({ startBtnHandlerInRef }) {
 
 
   useEffect(() => {
-    if (
-      !window.location.href.includes("#") &&
+    if (!window.location.href.includes("#") &&
       servicesSection.current.style.display === 'block' &&
-      window.location.pathname === "/home"
-    ) {
+      window.location.pathname === "/home") {
+
+      // 자동스크롤
       servicesSection.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [location.key])
@@ -195,11 +202,10 @@ function ServicesSection({ startBtnHandlerInRef }) {
 
     // <!-- Services Section -->
     // 달력앱 전체는 이 섹션안에서 작동한다.
-
     <section ref={servicesSection} id="services" className="services section" style={{ display: "none" }}>
 
       <Routes>
-        <Route path="/home" element={<CalendarHome fetchData={fetchData} loaded={loaded} error={error} handleOnClick={handleOnClick} navigator={navigator} />} />
+        <Route path="/home" element={<CalendarHome fetchData={fetchData} loaded={loaded} error={error} handleOnClick={handleOnClick} navigator={navigator} fetchHandler={fetchHandler} />} />
         <Route path="/home/error" element={<FetchError errorResInstance={errorResInstance} />} />
         <Route path="/create" element={<CalendarCreate navigator={navigator} fetchHandler={fetchHandler} servicesSection={servicesSection} />} />
         <Route path="/calendar/update/:calendarId" element={<CalendarUpdate navigator={navigator} location={location} fetchHandler={fetchHandler} servicesSection={servicesSection} />} />

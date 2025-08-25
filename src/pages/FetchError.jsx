@@ -1,14 +1,7 @@
 import '../styles/FetchError.css'
 
 function FetchError({errorResInstance}) {
-    console.log("FetchError 컴포넌트 실행시작");
-    console.log("FetchError errorResInstance",errorResInstance);
-    console.log("FetchError errorResInstance.status",errorResInstance.status);
-    console.log("FetchError errorResInstance.statusText",errorResInstance.statusText);
-
-    
-
-    
+ 
 
     function getErrorMessageForStatus (status) {
 
