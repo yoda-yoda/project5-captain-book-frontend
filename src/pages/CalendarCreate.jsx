@@ -15,7 +15,7 @@ function CalendarCreate({ navigator, fetchHandler, servicesSection }) {
 
     const saveSubmitBtnHandler = async (e) => {
         e.preventDefault();
-        await fetchHandler("/home", createRequestData);
+        await fetchHandler("/home", "POST", createRequestData);
         navigator("/home");
     }
 
