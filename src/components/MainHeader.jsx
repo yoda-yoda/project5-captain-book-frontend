@@ -25,7 +25,7 @@ function MainHeader() {
                 <nav id="navmenu" className="navmenu">
                     <ul>
                         <li><a href="#hero" className="active">Home</a></li>
-                        <li><a href="#services">Services</a></li>
+                        <li><a className="header-a-services" href="#services">Services</a></li>
                         <li><a href="#about">About</a></li>
                         <li><a href="#portfolio">Portfolio</a></li>
                         <li><a href="#team">Team</a></li>

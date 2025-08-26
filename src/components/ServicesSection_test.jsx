@@ -1,9 +1,8 @@
 
-
+// 테스트를 위한 bootstrap original version 
 function ServicesSection() {
 
   return (
-
 
     // <!-- Services Section -->
     <section id="services" className="services section">
