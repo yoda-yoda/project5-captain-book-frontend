@@ -51,16 +51,16 @@ function ServicesSection({ startBtnHandlerInRef }) {
 
 
 
-  const fetchHandler = useCallback(async (pathname, requestData) => {
+  const fetchHandler = useCallback(async (pathname, httpMethod, requestData) => {
 
     console.log("fetchHandler 내부 실행됨");
     console.log("pathname: ", pathname);
 
 
     try {
-      // /home GET fetch 일때 입장(requestData가 undefined 일때)
-      if (pathname === "/home" && !requestData) {
-        console.log("/home의 get fetch 입장")
+      // GET fetch 일때 입장
+      if (httpMethod === "GET") {
+        console.log("GET fetch 입장")
         const res = await fetch(pathname);
         if (!res.ok) {
           throw res;
@@ -69,33 +69,32 @@ function ServicesSection({ startBtnHandlerInRef }) {
         setFetchData(resJson)
         setLoaded(true);
         setError(false);
-        console.log("/home의 get fetch set 완료")
+        console.log("GET fetch set 완료")
       }
 
-      // /home 또는 /update POST fetch 일때 입장
-      else if ( (pathname === "/home" || pathname.startsWith("/calendar/update/")) &&
-        requestData) {
-        console.log("/home의 post fetch 입장")
+      // POST, PUT fetch 일때 입장
+      else if ( (httpMethod === "POST" || httpMethod === "PUT") && requestData) {
+        console.log("POST 또는 PUT 입장")
         const res = await fetch(pathname, {
           headers: {
             'Content-Type': 'application/json'
           },
-          method: 'POST',
+          method: httpMethod,
           body: JSON.stringify(requestData)
         });
-        console.log("/home의 post fetch 정상 완료")
+        console.log("POST 또는 PUT fetch 정상 완료")
         if (!res.ok) {
           throw res;
         }
       }
 
-      // delete POST fetch 일때 입장
-      else if (pathname.startsWith("/calendar/delete/")) {
-        console.log("delete POST fetch 입장")
+      // DELETE fetch 일때 입장
+      else if (httpMethod === "DELETE") {
+        console.log("DELETE fetch 입장")
         const res = await fetch(pathname, {
-          method: 'POST',
+          method: 'DELETE',
         });
-        console.log("delete POST fetch 정상 완료")
+        console.log("DELETE fetch 정상 완료")
         if (!res.ok) {
           throw res;
         }
@@ -157,7 +156,7 @@ function ServicesSection({ startBtnHandlerInRef }) {
       window.location.pathname === "/home" && !loaded &&
       !window.location.href.includes("#")) {
 
-      fetchHandler(window.location.pathname);
+      fetchHandler(window.location.pathname, "GET");
 
     } else if (servicesSection.current.style.display === 'block' &&
       window.location.pathname === "/home" && loaded &&
@@ -165,7 +164,7 @@ function ServicesSection({ startBtnHandlerInRef }) {
 
       setLoaded(false);
       setError(false);
-      fetchHandler(window.location.pathname);
+      fetchHandler(window.location.pathname, "GET");
 
     }
 

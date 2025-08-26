@@ -17,7 +17,7 @@ function CalendarUpdate({ navigator, location, fetchHandler, servicesSection }) 
 
     const updateBtnClickHandler = async (e) => {
         e.preventDefault();
-        await fetchHandler(`/calendar/update/${calendarId}`, updateRequestData);
+        await fetchHandler(`/calendar/update/${calendarId}`, "PUT", updateRequestData);
         navigator("/home");
     }
 

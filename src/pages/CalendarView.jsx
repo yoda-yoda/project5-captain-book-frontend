@@ -28,7 +28,7 @@ function CalendarView({ fetchData, handleOnClick, navigator, fetchHandler }) {
     };
 
     const deleteNavigateHandler = async (calendarId) => {
-        await fetchHandler(`/calendar/delete/${calendarId}`);
+        await fetchHandler(`/calendar/delete/${calendarId}`, "DELETE");
         navigator("/home");
     };
 
@@ -88,7 +88,7 @@ function CalendarView({ fetchData, handleOnClick, navigator, fetchHandler }) {
                                             <tr className="calendar-enter" key={calendarResponseDto.id}>
 
                                                 <td>
-                                                    <a onclick={handleOnClick(calendarResponseDto.id)}>
+                                                    <a onclick={ () => {handleOnClick(calendarResponseDto.id)} }>
                                                         {calendarResponseDto.date}
                                                     </a>
 
@@ -96,7 +96,7 @@ function CalendarView({ fetchData, handleOnClick, navigator, fetchHandler }) {
 
                                                 <td>
 
-                                                    <a onclick={handleOnClick(calendarResponseDto.id)}>
+                                                    <a onclick={ () => {handleOnClick(calendarResponseDto.id)} }>
                                                         {calendarResponseDto.title}
                                                     </a>
 
@@ -104,7 +104,7 @@ function CalendarView({ fetchData, handleOnClick, navigator, fetchHandler }) {
 
                                                 <td>
 
-                                                    <a onclick={handleOnClick(calendarResponseDto.id)}>
+                                                    <a onclick={ () => {handleOnClick(calendarResponseDto.id)} }>
                                                         {calendarResponseDto.totalAmount > 0 && `+${calendarResponseDto.totalAmount}원`}
                                                         {calendarResponseDto.totalAmount <= 0 && `${calendarResponseDto.totalAmount}원`}
                                                     </a>
