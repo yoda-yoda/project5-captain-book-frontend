@@ -23,8 +23,8 @@ function ServicesSection({ startBtnHandlerInRef }) {
   });
 
   const [fetchData, setFetchData] = useState({
-    calendarResponseDtoList: [],
-    calendarTotalSum: 0
+    statusCode: 200,
+    data: {}
   });
 
 
@@ -49,8 +49,6 @@ function ServicesSection({ startBtnHandlerInRef }) {
   };
 
 
-
-
   const fetchHandler = useCallback(async (pathname, httpMethod, requestData) => {
 
     console.log("fetchHandler 내부 실행됨");
@@ -62,6 +60,7 @@ function ServicesSection({ startBtnHandlerInRef }) {
       if (httpMethod === "GET") {
         console.log("GET fetch 입장")
         const res = await fetch(pathname);
+        
         if (!res.ok) {
           throw res;
         }
@@ -113,14 +112,11 @@ function ServicesSection({ startBtnHandlerInRef }) {
 
       // HTTP 오류일때(Response 객체가 할당됨)
       if (resObject instanceof Response) {
-        console.error(`error: [${resObject.status}, ${resObject.statusText}]`);
+        console.error(`error(HTTP 오류): [${resObject.status}, ${resObject.statusText}]`);
         setErrorResInstance(resObject);
-      } else { // 네트워크 등 오류일때(Response 객체가 할당되지않음)
+      } else { // 네트워크, json()파싱 오류 등 일때(에러 객체가 Response 객체가 아닐때)
         console.error(`error(비 HTTP 오류): [${resObject}]`);
-        setErrorResInstance({
-          status: 0,
-          statusText: resObject.name
-        })
+        setErrorResInstance(resObject);
       }
 
       // 에러가 발생했을때만 변경하는 상태값.
