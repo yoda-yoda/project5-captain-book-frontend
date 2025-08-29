@@ -1,4 +1,5 @@
 import { useLayoutEffect } from 'react';
+import { RecoilRoot } from 'recoil';
 import MainHeader from './components/MainHeader.jsx';
 import MainPage from './pages/MainPage.jsx';
 import MainFooter from './components/MainFooter.jsx';
@@ -37,11 +38,13 @@ function App() {
 
   return (
     <>
-      <MainHeader />
-      <MainPage />
-      <MainFooter />
-      <ScrollTop />
-      <PreLoader />
+      <RecoilRoot>
+        <MainHeader />
+        <MainPage />
+        <MainFooter />
+        <ScrollTop />
+        <PreLoader />
+      </RecoilRoot>
     </>
 
   )

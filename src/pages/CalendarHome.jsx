@@ -3,12 +3,11 @@ import Loading from "../components/Loading.jsx"
 import '../styles/CalendarHome.css'
 
 
-function CalendarHome({ fetchData, loaded, error, handleOnClick, navigator, fetchHandler }) {
+function CalendarHome({ fetchData, loaded, error, navigatorToItems, navigator, fetchHandler }) {
 
 
     return (
         <>
-
             {/* <!-- Section Title --> */}
             <div className="container section-title" data-aos="fade-up">
                 <h2> 달력 </h2>
@@ -28,7 +27,7 @@ function CalendarHome({ fetchData, loaded, error, handleOnClick, navigator, fetc
                         {loaded && error && <Loading />}
 
                         {/* loaded = true, error =false 이어야 렌더링*/}
-                        {loaded && !error && <CalendarView fetchData={fetchData} handleOnClick={handleOnClick} navigator={navigator} fetchHandler={fetchHandler} />}
+                        {loaded && !error && <CalendarView fetchData={fetchData} navigatorToItems={navigatorToItems} navigator={navigator} fetchHandler={fetchHandler} />}
 
                     </div>
 

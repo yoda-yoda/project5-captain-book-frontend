@@ -2,8 +2,9 @@ import { Link } from 'react-router-dom'
 import { useRef } from 'react'
 import '../styles/CalendarView.css'
 
-function CalendarView({ fetchData, handleOnClick, navigator, fetchHandler }) {
+function CalendarView({ fetchData, navigatorToItems, navigator, fetchHandler }) {
 
+    console.log("CalendarView 실행")
 
     const editModal = useRef();
     const calendarResponseDtoList = fetchData.data.calendarResponseDtoList;
@@ -43,7 +44,7 @@ function CalendarView({ fetchData, handleOnClick, navigator, fetchHandler }) {
                 <div className="calendar-home-container" data-aos="fade-up">
 
                     <div className="calendar-create-btn-container" >
-                        <Link to="/create" className="calendar-create-btn">새 달력 추가</Link>
+                        <Link to="/create" className="calendar-create-btn">+</Link>
                     </div>
 
 
@@ -91,28 +92,19 @@ function CalendarView({ fetchData, handleOnClick, navigator, fetchHandler }) {
                                             return (
                                                 <tr className="calendar-enter" key={calendarResponseDto.id}>
 
-                                                    <td>
-                                                        <a onclick={() => { handleOnClick(calendarResponseDto.id) }}>
-                                                            {calendarResponseDto.date}
-                                                        </a>
-
+                                                    <td onClick={() => { navigatorToItems(calendarResponseDto.id) }}>
+                                                        {calendarResponseDto.date}
                                                     </td>
 
-                                                    <td>
-
-                                                        <a onclick={() => { handleOnClick(calendarResponseDto.id) }}>
-                                                            {calendarResponseDto.title}
-                                                        </a>
-
+                                                    <td className='calendar-td-title'
+                                                    onClick={() => { navigatorToItems(calendarResponseDto.id) }}>
+                                                        {calendarResponseDto.title}
                                                     </td>
 
-                                                    <td>
-
-                                                        <a onclick={() => { handleOnClick(calendarResponseDto.id) }}>
-                                                            {calendarResponseDto.totalAmount > 0 && `+${calendarResponseDto.totalAmount}원`}
-                                                            {calendarResponseDto.totalAmount <= 0 && `${calendarResponseDto.totalAmount}원`}
-                                                        </a>
-
+                                                    <td
+                                                    onClick={() => { navigatorToItems(calendarResponseDto.id) }}>
+                                                        {calendarResponseDto.totalAmount > 0 && `+${calendarResponseDto.totalAmount}원`}
+                                                        {calendarResponseDto.totalAmount <= 0 && `${calendarResponseDto.totalAmount}원`}
                                                     </td>
 
                                                     <td className="edit-and-delete-btn-td">
@@ -162,7 +154,7 @@ function CalendarView({ fetchData, handleOnClick, navigator, fetchHandler }) {
 
                 {/* <!-- bootstrap editModal --> */}
                 <div ref={editModal}
-                    className="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                    className="modal fade" id="editModal" tabIndex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -189,7 +181,7 @@ function CalendarView({ fetchData, handleOnClick, navigator, fetchHandler }) {
 
                 {/* <!-- bootstrap deleteModal --> */}
                 <div
-                    className="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                    className="modal fade" id="deleteModal" tabIndex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">

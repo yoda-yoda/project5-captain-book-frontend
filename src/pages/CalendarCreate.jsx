@@ -12,6 +12,8 @@ function CalendarCreate({ navigator, fetchHandler, servicesSection }) {
         title: title
     }
 
+    const maxDate = "9999-12-31"
+
 
     const saveSubmitBtnHandler = async (e) => {
         e.preventDefault();
@@ -42,12 +44,14 @@ function CalendarCreate({ navigator, fetchHandler, servicesSection }) {
                         <label htmlFor="date">날짜:</label>
                         <input type="date" id="date" name="date"
                             onChange={(e) => setDate(e.target.value)}
+                            max={maxDate}
                             required />
                     </div>
 
                     <div>
                         <label htmlFor="title">제목:</label>
                         <input type="text" id="title" name="title" placeholder="제목을 입력하세요"
+                            maxLength={35}
                             onChange={(e) => setTitle(e.target.value)}
                             required />
                     </div>

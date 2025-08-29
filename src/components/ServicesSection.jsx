@@ -1,8 +1,11 @@
-import { useCallback, useEffect, useRef, useState, useLayoutEffect } from "react";
+import { useCallback, useEffect, useRef, useState, useLayoutEffect, useMemo } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import CalendarCreate from "../pages/CalendarCreate.jsx";
 import CalendarUpdate from "../pages/CalendarUpdate.jsx"
 import CalendarHome from "../pages/CalendarHome.jsx";
+import CalendarItemHome from "../pages/CalendarItemHome.jsx";
+import CalendarItemCreate from "../pages/CalendarItemCreate.jsx";
+import CalendarItemUpdate from "../pages/CalendarItemUpdate.jsx";
 import FetchError from "../pages/FetchError.jsx"
 import "../styles/ServicesSection.css"
 
@@ -28,6 +31,17 @@ function ServicesSection({ startBtnHandlerInRef }) {
   });
 
 
+  // 동적 Route path의 패턴 체크를 위한 정규표현식List
+  const regExpList = useMemo(() => {
+    return {
+
+      // Route path="/calendar/:calendarId/item" 형식 체크를 위한 정규표현식
+      calendarItemViewRegExp: /^\/calendar\/\d+\/item$/,
+
+    }
+  }, [])
+
+
 
   const startBtnHandler = useCallback(() => {
 
@@ -42,11 +56,10 @@ function ServicesSection({ startBtnHandlerInRef }) {
 
   }, []);
 
-  const handleOnClick = async function (id) {
-    // navigator(`/calendar/${id}/item`);
-    // const url = location.pathname;
-    // await fetchHandler(url)
+  const navigatorToItems = (calendarId) => {
+    navigator(`/calendar/${calendarId}/item`);
   };
+
 
 
   const fetchHandler = useCallback(async (pathname, httpMethod, requestData) => {
@@ -60,7 +73,7 @@ function ServicesSection({ startBtnHandlerInRef }) {
       if (httpMethod === "GET") {
         console.log("GET fetch 입장")
         const res = await fetch(pathname);
-        
+
         if (!res.ok) {
           throw res;
         }
@@ -72,7 +85,7 @@ function ServicesSection({ startBtnHandlerInRef }) {
       }
 
       // POST, PUT fetch 일때 입장
-      else if ( (httpMethod === "POST" || httpMethod === "PUT") && requestData) {
+      else if ((httpMethod === "POST" || httpMethod === "PUT") && requestData) {
         console.log("POST 또는 PUT 입장")
         const res = await fetch(pathname, {
           headers: {
@@ -93,6 +106,8 @@ function ServicesSection({ startBtnHandlerInRef }) {
         const res = await fetch(pathname, {
           method: 'DELETE',
         });
+        const text = await res.text() //
+        console.log("text", text) //
         console.log("DELETE fetch 정상 완료")
         if (!res.ok) {
           throw res;
@@ -147,12 +162,15 @@ function ServicesSection({ startBtnHandlerInRef }) {
   // 문제는 없지만 가독성을 위해 나중에 if문 분기 없애고 하나로 통합해도될듯. 왜냐면 새로고침하면 어차피 display가 none인 경우라면 !loaded랑 loaded로 굳이 나눌 필요가 없는듯.
   // 나중에 로그인 기능넣었을때는 새로고침 시 block 유지 하도록 바꾼다면 이대로 둬야겠지만 일단 냅두기. 
   useLayoutEffect(() => {
+    console.log("useLayoutEffect 실행")
+
 
     if (servicesSection.current.style.display === 'block' &&
       window.location.pathname === "/home" && !loaded &&
       !window.location.href.includes("#")) {
 
       fetchHandler(window.location.pathname, "GET");
+      return;
 
     } else if (servicesSection.current.style.display === 'block' &&
       window.location.pathname === "/home" && loaded &&
@@ -161,7 +179,20 @@ function ServicesSection({ startBtnHandlerInRef }) {
       setLoaded(false);
       setError(false);
       fetchHandler(window.location.pathname, "GET");
+      return;
 
+    }
+
+
+    // Route path="/calendar/:calendarId/item" 형식 일때 입장한다. 정규 표현식을 활용하였다.
+    if (servicesSection.current.style.display === 'block' &&
+      regExpList.calendarItemViewRegExp.test(window.location.pathname) && loaded &&
+      !window.location.href.includes("#")) {
+
+      setLoaded(false);
+      setError(false);
+      fetchHandler(window.location.pathname, "GET");
+      return;
     }
 
   }, [location.key])
@@ -180,13 +211,24 @@ function ServicesSection({ startBtnHandlerInRef }) {
   }, [catchFlag])
 
 
-
+  // 자동스크롤을 위한 useEffect
   useEffect(() => {
-    if (!window.location.href.includes("#") &&
+    if (window.location.pathname === "/home" &&
       servicesSection.current.style.display === 'block' &&
-      window.location.pathname === "/home") {
+      !window.location.href.includes("#")) {
 
-      // 자동스크롤
+      servicesSection.current.scrollIntoView({ behavior: 'smooth' });
+    }
+    else if (window.location.pathname === "/home/error" &&
+      servicesSection.current.style.display === 'block' &&
+      !window.location.href.includes("#")) {
+
+      servicesSection.current.scrollIntoView({ behavior: 'smooth' });
+    }
+    else if (regExpList.calendarItemViewRegExp.test(window.location.pathname) &&
+      servicesSection.current.style.display === 'block' &&
+      !window.location.href.includes("#")) {
+
       servicesSection.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [location.key])
@@ -200,10 +242,13 @@ function ServicesSection({ startBtnHandlerInRef }) {
     <section ref={servicesSection} id="services" className="services section" style={{ display: "none" }}>
 
       <Routes>
-        <Route path="/home" element={<CalendarHome fetchData={fetchData} loaded={loaded} error={error} handleOnClick={handleOnClick} navigator={navigator} fetchHandler={fetchHandler} />} />
+        <Route path="/home" element={<CalendarHome fetchData={fetchData} loaded={loaded} error={error} navigatorToItems={navigatorToItems} navigator={navigator} fetchHandler={fetchHandler} />} />
         <Route path="/home/error" element={<FetchError errorResInstance={errorResInstance} />} />
         <Route path="/create" element={<CalendarCreate navigator={navigator} fetchHandler={fetchHandler} servicesSection={servicesSection} />} />
         <Route path="/calendar/update/:calendarId" element={<CalendarUpdate navigator={navigator} location={location} fetchHandler={fetchHandler} servicesSection={servicesSection} />} />
+        <Route path="/calendar/:calendarId/item" element={<CalendarItemHome fetchData={fetchData} loaded={loaded} error={error} navigator={navigator} fetchHandler={fetchHandler} />} />
+        <Route path="/calendar/:calendarId/item/create" element={<CalendarItemCreate navigator={navigator} location={location} fetchHandler={fetchHandler} servicesSection={servicesSection} />} />
+        <Route path="/calendar/:calendarId/item/:calendarItemId/update" element={<CalendarItemUpdate navigator={navigator} location={location} fetchHandler={fetchHandler} servicesSection={servicesSection} />} />
       </Routes>
 
     </section>
