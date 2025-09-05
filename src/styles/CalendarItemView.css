@@ -2,6 +2,17 @@
   box-sizing: border-box;
 }
 
+.container.calendar-item-view-contents {
+    min-height: 800px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    box-sizing: border-box;
+    margin-top: 0px;
+
+}
 
 .calendar-item-container {
 
@@ -44,8 +55,6 @@
   border-color: #2dc997
 }
 
-.calendarItem-list-container {
-}
 
 .calendarItem-list-thead th {
 

@@ -1,15 +1,23 @@
-import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useState, useEffect, useLayoutEffect } from "react";
+import { useParams } from "react-router-dom";
 import "../styles/CalendarItemCreate.css"
+import Loading from "../components/Loading.jsx";
 
-function CalendarItemCreate({ navigator, location, fetchHandler, servicesSection }) {
+function CalendarItemCreate({ navigator, fetchHandler, servicesSection }) {
 
     const { calendarId } = useParams();
     const [itemTitle, setItemTitle] = useState();
     const [itemAmount, setItemAmount] = useState();
     const [type, setType] = useState();
-    const [calendarResponseDto] = useState(location.state?.calendarResponseDto);
-   
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [loaded, setLoaded] = useState(false);
+
+    const [calendarResponseDto, setCalendarResponseDto] = useState({
+        id: 0,
+        date: "1111-11-11",
+        title: "title",
+        totalAmount: 0
+    });
 
     const createItemRequestData = {
         itemTitle: itemTitle,
@@ -19,9 +27,33 @@ function CalendarItemCreate({ navigator, location, fetchHandler, servicesSection
 
     const itemSaveSubmitBtnHandler = async (e) => {
         e.preventDefault();
-        await fetchHandler(`/calendar/${calendarId}/item`, "POST", createItemRequestData);
+
+        // 중복 제출 방지
+        if (isSubmitting) {
+            return;
+        }
+
+        setIsSubmitting(true);
+        await fetchHandler(`/api/calendar/${calendarId}/item`, "POST", createItemRequestData);
         navigator(`/calendar/${calendarId}/item`);
     }
+
+    async function checkFetchData() {
+        const resCalendarDto = await fetchHandler(`/api/calendar/${calendarId}`, "GET");
+
+        // 현재 구현상 error가 발생하면 resCalendarDto는 undefined 이다.
+        if (resCalendarDto) {
+            setCalendarResponseDto(resCalendarDto?.data);
+            setLoaded(true);
+        }
+    }
+
+
+    // 렌더링 진입시(뒤로가기 포함) 최신 데이터 갱신을 위한 useLayoutEffect의 fetch 로직이다.
+    useLayoutEffect(() => {
+        checkFetchData();
+    }, []);
+
 
     useEffect(() => {
         // 자동 스크롤
@@ -31,74 +63,117 @@ function CalendarItemCreate({ navigator, location, fetchHandler, servicesSection
     console.log("calendarResponseDto", calendarResponseDto)
 
 
-    return (
+    if (calendarResponseDto && loaded) {
+        return (
 
-        <>
+            <div className="container">
+                <div className="row gy-4">
 
-            {/* <!-- Section Title --> */}
-            <div className="container section-title">
-                <h2> 달력: {calendarResponseDto.date} </h2>
-                <h2> 제목: {calendarResponseDto.title}</h2>
-
-                <div className="fallback-btn-container" >
-                    <button onClick={() => navigator(-1)} className="fallback-btn">뒤로가기</button>
-                </div>
-
-                <div className="calendar-home-btn-container" >
-                    <Link to="/home" className="calendar-home-btn">홈</Link>
-                </div>
-            </div>
-            {/* <!-- End Section Title --> */}
+                    <div className="container calendar-item-create-contents">
 
 
-            <div className="container calendar-item-create-contents">
-
-
-                <form action="" onSubmit={(e) => { itemSaveSubmitBtnHandler(e) }}>
-                    <div>
-                        <label htmlFor="item-title">항목명:</label>
-                        <input type="text" id="item-title" name="itemTitle" placeholder="항목명을 입력하세요"
-                            onChange={(e) => setItemTitle(e.target.value)}
-                            maxLength={45}
-                            required />
-                    </div>
-
-
-                    <div>
-                        <label htmlFor="item-amount">금액:</label>
-                        <input type="number" id="item-amount" name="itemAmount" placeholder="금액을 입력하세요"
-                            onChange={(e) => setItemAmount(e.target.value)}
-                            required min="0" max="999999999999" />
-
-                        <label>
-                            <input type="radio" name="type" value="EXPENSE"
-                                checked={type === "EXPENSE"}
-                                onChange={(e) => setType(e.target.value)}
-                                required />
-                            지출
-                        </label>
-                        <label>
-                            <input type="radio" name="type" value="INCOME"
-                                checked={type === "INCOME"}
-                                onChange={(e) => setType(e.target.value)}
-                            />
-                            수입
-                        </label>
-
-                    </div>
-
-                    <div>
-                        <button type="submit">
-                            저장
+                        {/* <!-- Start item top --> */}
+                        <button onClick={() => navigator("/home")} className="home-btn-container">
+                            <i className="bi bi-house-door-fill home-btn" />
                         </button>
+
+                        <hr id="item-create-top-hr" className="top-hr"></hr>
+
+                        <div className="container top-box">
+
+                            <div className="container top-date">
+                                <span className="top-calendar-date">달력</span>
+                                <h3> {calendarResponseDto.date} </h3>
+                            </div>
+
+                            <div className="container top-title">
+                                <span className="top-calendar-title">제목</span>
+                                <h3> {calendarResponseDto.title}</h3>
+                            </div>
+
+                        </div>
+
+                        <hr id="item-create-top-hr" className="top-hr"></hr>
+
+                        {/* <!-- End item top --> */}
+
+
+
+                        <div className="container calendar-item-create-inner-contents" data-aos="fade-in">
+
+
+                            <form action="" onSubmit={(e) => { itemSaveSubmitBtnHandler(e) }}>
+                                <div className="container item-create-data-flex-box">
+                                    <div className="container item-create-data-flex-input-box">
+                                        <div>
+                                            <label htmlFor="item-create-title">
+                                                <span className="item-create-title">항목:</span>
+                                            </label>
+                                            <input
+                                                className="item-create-title-input"
+                                                type="text" id="item-create-title" name="itemTitle" placeholder="항목명을 입력하세요"
+                                                onChange={(e) => setItemTitle(e.target.value)}
+                                                maxLength={45}
+                                                required />
+                                        </div>
+
+                                        <div>
+                                            <label htmlFor="item-create-amount">
+                                                <span className="item-create-amount">금액:</span>
+                                            </label>
+                                            <input
+                                                className="item-create-amount-input"
+                                                type="number" id="item-create-amount" name="itemAmount" placeholder="금액을 입력하세요"
+                                                onChange={(e) => setItemAmount(e.target.value)}
+                                                required min="0" max="999999999999" />
+                                        </div>
+                                        <div>
+                                            <span className="item-create-type">종류:</span>
+                                            <label className="item-create-type-label-expense">
+                                                <input type="radio" name="type" value="EXPENSE"
+                                                    checked={type === "EXPENSE"}
+                                                    onChange={(e) => setType(e.target.value)}
+                                                    required />
+                                                지출
+                                            </label>
+                                            <label className="item-create-type-label-income">
+                                                <input type="radio" name="type" value="INCOME"
+                                                    checked={type === "INCOME"}
+                                                    onChange={(e) => setType(e.target.value)}
+                                                />
+                                                수입
+                                            </label>
+
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button className="item-create-btn" type="submit">
+                                            <i className="bi bi-check-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+
+                        </div>
                     </div>
-                </form>
-
-
+                </div>
             </div>
 
-        </>
-    )
+        )
+    } else if (!loaded) {
+        return (
+            <div className="container calendar-item-create-contents">
+                <Loading />
+            </div>
+        )
+    } else {
+        return (
+            <div className="container calendar-item-create-contents">
+                <div> 데이터 접근에 문제가 발생하였습니다. </div>
+            </div>
+        );
+    }
 
 }
 

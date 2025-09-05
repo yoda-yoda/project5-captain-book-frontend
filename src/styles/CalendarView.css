@@ -10,7 +10,7 @@ a:visited {
   color: #000;
 }
 
-.calendar-home-container {
+.container.calendar-view-contents {
 
   display: flex;
   flex-direction: column;

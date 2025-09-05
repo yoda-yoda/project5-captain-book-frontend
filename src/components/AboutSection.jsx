@@ -1,5 +1,3 @@
-import "../styles/AboutSection.css"
-
 function AboutSection() {
 
     return (
