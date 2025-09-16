@@ -11,6 +11,36 @@
 
 }
 
+#top-hr.error-top-hr {
+    border: 1px solid rgb(163, 160, 160);
+    width: 70%;
+}
+
+.error-home-btn-container {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border: 0;
+    background-color: white;
+}
+
+
+.bi.bi-house-door-fill.error-home-btn {
+    display: inline;
+    font-size: 30px;
+    color: rgb(45, 201, 151);
+    transition: 0.5s ease;
+}
+
+.bi.bi-house-door-fill.error-home-btn:hover {
+    transition: 20%;
+    color: rgb(103, 233, 192);
+}
+
+.bi.bi-house-door-fill.error-home-btn::before {
+    display: inline;
+}
+
+
 .error-message-container {
 
     margin-top: 150px;
@@ -19,4 +49,26 @@
     align-items: center;
     box-sizing: border-box;
 
+}
+
+.error-message-header {
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+
+}
+
+.error-img-alert {
+    width: 70px;
+    height: 70px;
+}
+
+.error-message-span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    margin-top: 20px;
 }

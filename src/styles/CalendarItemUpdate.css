@@ -1,4 +1,4 @@
-.container.calendar-update-contents {
+.container.calendar-item-update-contents {
     min-height: 800px;
 
     display: flex;
@@ -7,12 +7,10 @@
 
     box-sizing: border-box;
     margin-top: 0px;
-
 }
 
 
-.container.calendar-update-inner-contents {
-
+.container.calendar-item-update-inner-contents {
     min-height: 500px;
 
     display: flex;
@@ -21,41 +19,16 @@
 
     box-sizing: border-box;
     margin-top: 0px;
-
 }
 
 
-#update-top-hr.top-hr {
+
+#item-update-top-hr.top-hr {
     border: 1px solid rgb(188, 186, 186);
     width: 70%;
 }
 
-
-.home-btn-container {
-    margin-top: 20px;
-    margin-bottom: 10px;
-    border: 0;
-    background-color: white;
-}
-
-.bi.bi-house-door-fill.home-btn {
-    display: inline;
-    font-size: 30px;
-    color: rgb(45, 201, 151);
-    transition: 0.5s ease;
-}
-
-.bi.bi-house-door-fill.home-btn:hover {
-    transition: 20%;
-    color: rgb(103, 233, 192);
-}
-
-.bi.bi-house-door-fill.home-btn::before {
-    display: inline;
-}
-
-
-.container.update-data-flex-box {
+.container.item-update-data-flex-box {
     margin-top: 70px;
     display: flex;
     flex-direction: row;
@@ -63,7 +36,7 @@
     gap: 10px;
 }
 
-.container.update-data-flex-input-box {
+.container.item-update-data-flex-input-box {
     display: flex;
     flex-direction: column;
     font-size: large;
@@ -71,31 +44,22 @@
 }
 
 
-.update-date {
+.item-update-title {
     margin-right: 20px;
 }
 
-.update-title {
+.item-update-amount {
     margin-right: 20px;
 }
 
-
-.update-date-input {
-    border-color: #eae4e4;
-    border-radius: 7px;
-    width: 200px;
+.item-update-type {
+    margin-right: 20px;
 }
 
-.update-title-input {
-    border-color: #eae4e4;
-    border-radius: 7px;
-    width: 200px;
-}
-
-
-.calendar-update-btn {
+.item-update-btn {
     background-color: white;
     font-size: 100%;
+    margin-top: 20px;
     padding-top: 8px;
     padding-bottom: 8px;
     padding-left: 18px;
@@ -108,8 +72,24 @@
     transition: 0.5s ease;
 }
 
-.calendar-update-btn:hover {
+.item-update-btn:hover {
     color: white;
     background-color: #2dc997;
     border-color: #2dc997
+}
+
+.item-update-title-input {
+    border-color: #eae4e4;
+    border-radius: 7px;
+    width: 200px;
+}
+
+.item-update-amount-input {
+    border-color: #eae4e4;
+    border-radius: 7px;
+    width: 200px;
+}
+
+.item-update-type-label-expense {
+    margin-right: 10px;
 }

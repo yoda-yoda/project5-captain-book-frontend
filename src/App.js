@@ -1,4 +1,5 @@
 import { useLayoutEffect } from 'react';
+import { RecoilRoot } from 'recoil';
 import MainHeader from './components/MainHeader.jsx';
 import MainPage from './pages/MainPage.jsx';
 import MainFooter from './components/MainFooter.jsx';
@@ -21,9 +22,10 @@ function App() {
 
   console.log("App 실행")
 
-  window.addEventListener('load', () => {
-    window.scrollTo(0, 0);
-  });
+  // const loadScrollHandler = () => {
+  //   window.scrollTo(0, 0);
+  // }
+
 
 
   useLayoutEffect(() => {
@@ -32,16 +34,24 @@ function App() {
     script.async = true;
     document.body.appendChild(script);
     window.history.scrollRestoration = 'manual';
+    // window.addEventListener('load', loadScrollHandler);
+
+
+    return () => {
+      // window.removeEventListener('load', loadScrollHandler);
+    }
   }, []);
 
 
   return (
     <>
-      <MainHeader />
-      <MainPage />
-      <MainFooter />
-      <ScrollTop />
-      <PreLoader />
+      <RecoilRoot>
+        <MainHeader />
+        <MainPage />
+        <MainFooter />
+        <ScrollTop />
+        <PreLoader />
+      </RecoilRoot>
     </>
 
   )
