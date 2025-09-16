@@ -44,7 +44,6 @@ function ServicesSection({ startBtnHandlerInRef }) {
 
     console.log("fetchHandler 내부 실행됨");
     console.log("apiPathname: ", apiPathname);
-    const api = "/api";
 
     try {
       // GET fetch 일때 입장
