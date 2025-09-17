@@ -1,7 +1,5 @@
 import { Link, useParams } from "react-router-dom";
 import { useLayoutEffect, useEffect, useState } from "react";
-import { selectedCalendarItem } from '../recoil/atoms'
-import { useRecoilState } from 'recoil'
 import Loading from "../components/Loading.jsx";
 import '../styles/CalendarItemView.css'
 
@@ -38,7 +36,7 @@ function CalendarItemView({ navigator, fetchHandler, servicesSection }) {
 
     const itemDeleteNavigateHandler = async (calendarItemId) => {
         setLoaded(false);
-        await fetchHandler(`/api/calendar/${calendarId}/item/${calendarItemId}/delete`, "DELETE");
+        await fetchHandler(`/api/calendar/item/${calendarItemId}/delete`, "DELETE");
         checkFetchData();
         servicesSection.current?.scrollIntoView({ behavior: 'smooth' });
     };

@@ -2,3 +2,149 @@
     padding-top: 30px;
     margin-bottom: 25%;
 }
+
+#loginModalLabel{
+    text-align: center;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+
+.login-btn-container {
+   display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+    margin-top: 30px;
+    margin-bottom: 80px;
+}
+
+#loginModalLabel {
+    margin-top: 0px;
+    padding-top: 0px;
+    margin-bottom: 40px;
+    font-size: 40px;
+}
+
+
+.google-login-btn {
+    display: flex;
+    width: 80%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border: 2px solid rgb(239, 228, 228);
+    border-radius: 8px;
+    padding: 7px;
+    font-size: 18px;
+    color: black;
+    
+    cursor: pointer;
+}
+
+
+#google-login-logo {
+  width: 55px;
+  height: auto;
+  margin-right: 12px;
+}
+
+#google-login-btn-span {
+    color: rgb(37, 34, 34);
+    border: none;
+    background-color: white;   
+}
+
+#google-login-btn-span:hover {
+  color: black
+}
+
+
+
+
+
+
+
+.kakao-login-btn {
+    display: flex;
+    width: 80%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border: 2px solid rgb(239, 228, 228);
+    border-radius: 8px;
+    padding: 7px;
+    font-size: 18px;
+    color: black;
+    
+    cursor: pointer;
+}
+
+
+#kakao-login-logo {
+  width: 55px;
+  height: auto;
+  margin-right: 12px;
+}
+
+#kakao-login-btn-span {
+    color: rgb(37, 34, 34);
+    border: none;
+    background-color: white;   
+}
+
+#kakao-login-btn-span:hover {
+  color: black
+}
+
+
+
+
+.naver-login-btn {
+    display: flex;
+    width: 80%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border: 2px solid rgb(239, 228, 228);
+    border-radius: 8px;
+    padding: 7px;
+    font-size: 18px;
+    color: black;
+    
+    cursor: pointer;
+}
+
+
+#naver-login-logo {
+  width: 55px;
+  height: auto;
+  margin-right: 12px;
+}
+
+#naver-login-btn-span {
+    color: rgb(37, 34, 34);
+    border: none;
+    background-color: white;   
+}
+
+#naver-login-btn-span:hover {
+  color: black
+}
+
+
+
+
+
+
+
+
+.modal-footer {
+    border-top: none;
+}

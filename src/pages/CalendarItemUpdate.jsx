@@ -37,6 +37,7 @@ function CalendarItemUpdate({ navigator, fetchHandler, servicesSection }) {
 
   
     async function checkFetchData() {
+        
         const resCalendarDto = await fetchHandler(`/api/calendar/${calendarId}`, "GET");
         
         // 현재 구현상 error가 발생하면 resCalendarDto는 undefined 이다.
@@ -44,7 +45,7 @@ function CalendarItemUpdate({ navigator, fetchHandler, servicesSection }) {
         if (!resCalendarDto) return;
 
         const resItemDto = await fetchHandler(`/api/calendar/${calendarId}/item/${calendarItemId}`, "GET");
-
+                                                   
         // 현재 구현상 error가 발생하면 resItemDto는 undefined 이다.
         if (resCalendarDto && resItemDto) {
             setCalendarResponseDto(resCalendarDto?.data);
@@ -55,7 +56,7 @@ function CalendarItemUpdate({ navigator, fetchHandler, servicesSection }) {
 
     const updateBtnClickHandler = async (e) => {
         e.preventDefault();
-        await fetchHandler(`/api/calendar/${calendarId}/item/${calendarItemResponseDto.id}/update`, "PUT", updateRequestData);
+        await fetchHandler(`/api/calendar/item/${calendarItemResponseDto.id}/update`, "PUT", updateRequestData);
         navigator(`/calendar/${calendarId}/item`);
     }
 

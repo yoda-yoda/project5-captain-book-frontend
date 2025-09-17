@@ -1,5 +1,6 @@
 import StartBtn from "../components/StartBtn";
 
+
 function HeroSection({startBtnHandlerInRef}) {
 
 

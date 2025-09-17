@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import { RecoilRoot } from 'recoil';
 import MainHeader from './components/MainHeader.jsx';
 import MainPage from './pages/MainPage.jsx';
@@ -20,11 +20,16 @@ import './styles/Loading.css'
 
 function App() {
 
+  const loginMainBtnHandlerInRef = useRef(() => {});
+
+  const fetchHandlerInRef = useRef(() => {});
+
   console.log("App 실행")
 
   // const loadScrollHandler = () => {
   //   window.scrollTo(0, 0);
   // }
+
 
 
 
@@ -37,8 +42,10 @@ function App() {
     // window.addEventListener('load', loadScrollHandler);
 
 
+
     return () => {
       // window.removeEventListener('load', loadScrollHandler);
+      
     }
   }, []);
 
@@ -46,8 +53,8 @@ function App() {
   return (
     <>
       <RecoilRoot>
-        <MainHeader />
-        <MainPage />
+        <MainHeader loginMainBtnHandlerInRef={loginMainBtnHandlerInRef} fetchHandlerInRef={fetchHandlerInRef} />
+        <MainPage loginMainBtnHandlerInRef={loginMainBtnHandlerInRef} fetchHandlerInRef={fetchHandlerInRef} />
         <MainFooter />
         <ScrollTop />
         <PreLoader />

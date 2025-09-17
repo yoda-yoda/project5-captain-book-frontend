@@ -5,7 +5,6 @@ import '../styles/CalendarView.css'
 
 function CalendarView({ navigator, fetchHandler, servicesSection }) {
 
-
     console.log("CalendarView 실행")
 
     const editModal = useRef();
@@ -21,6 +20,7 @@ function CalendarView({ navigator, fetchHandler, servicesSection }) {
         ],
         calendarTotalSum: 0
     });
+    
 
     const calendarResponseDtoList = resDtoData.calendarResponseDtoList;
     const calendarTotalSum = resDtoData.calendarTotalSum;
@@ -63,13 +63,19 @@ function CalendarView({ navigator, fetchHandler, servicesSection }) {
             setResDtoData(resDto?.data);
             setLoaded(true);
         }
+        console.log("뿡뿡뿡")
     }
+
+
 
     // 렌더링 진입시(뒤로가기 포함) 최신 데이터 갱신을 위한 useLayoutEffect의 fetch 로직이다.
     useLayoutEffect(() => {
         checkFetchData();
 
     }, []);
+
+
+
 
     useEffect(() => {
         servicesSection.current?.scrollIntoView({ behavior: 'smooth' });

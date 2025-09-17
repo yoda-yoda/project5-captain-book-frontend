@@ -1,17 +1,22 @@
+import { loginAtom } from '../recoil/atoms'
+import { useRecoilState } from 'recoil'
+import LoginMainBtn from "./LoginMainBtn.jsx";
+import LogoutBtn from './LogoutBtn.jsx';
 
 
+function MainHeader({ loginMainBtnHandlerInRef, fetchHandlerInRef }) {
 
-function MainHeader() {
+    const [login, setLogin] = useRecoilState(loginAtom);
 
     return (
 
-    /* <!-- =======================================================
-    * Template Name: Regna
-    * Template URL: https://bootstrapmade.com/regna-bootstrap-onepage-template/
-    * Updated: Aug 07 2024 with Bootstrap v5.3.3
-    * Author: BootstrapMade.com
-    * License: https://bootstrapmade.com/license/
-    ======================================================== --> */
+        /* <!-- =======================================================
+        * Template Name: Regna
+        * Template URL: https://bootstrapmade.com/regna-bootstrap-onepage-template/
+        * Updated: Aug 07 2024 with Bootstrap v5.3.3
+        * Author: BootstrapMade.com
+        * License: https://bootstrapmade.com/license/
+        ======================================================== --> */
 
         <header id="header" className="header d-flex align-items-center fixed-top">
             <div className="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
@@ -46,8 +51,19 @@ function MainHeader() {
                                 <li><a href="#">Dropdown 4</a></li>
                             </ul>
                         </li>
-                        <li><a href="#contact">Contact</a></li>
+
+                        {!login.isLogin &&
+                            <LoginMainBtn login={login} loginMainBtnHandlerInRef={loginMainBtnHandlerInRef} />
+                        }
+
+                        {login.isLogin &&
+                            <LogoutBtn setLogin={setLogin} fetchHandlerInRef={fetchHandlerInRef} />
+                        }
+
+
+
                     </ul>
+
                     <i className="mobile-nav-toggle d-xl-none bi bi-list"></i>
                 </nav>
 
