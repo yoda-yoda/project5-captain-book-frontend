@@ -10,6 +10,9 @@ import CalendarItemView from "../pages/CalendarItemView.jsx";
 import CalendarItemCreate from "../pages/CalendarItemCreate.jsx";
 import CalendarItemUpdate from "../pages/CalendarItemUpdate.jsx";
 import FetchError from "../pages/FetchError.jsx"
+import SignUp from "../pages/SignUp.jsx";
+import SignUpOk from "../pages/SignUpOk.jsx";
+import SignIn from "../pages/SignIn.jsx";
 import LoginModal from "./LoginModal.jsx";
 import "../styles/ServicesSection.css"
 
@@ -19,6 +22,7 @@ function ServicesSection({ startBtnHandlerInRef, loginMainBtnHandlerInRef, fetch
 
   const servicesSection = useRef(null);
   const loginModal = useRef(null);
+  const loginModalInstance = useRef(null);
   const navigator = useNavigate();
   const location = useLocation();
 
@@ -31,6 +35,7 @@ function ServicesSection({ startBtnHandlerInRef, loginMainBtnHandlerInRef, fetch
   });
 
 
+        console.log("logIn =>", login);
 
   // 오아스 구현 중
   const startBtnHandler = () => {
@@ -84,7 +89,7 @@ function ServicesSection({ startBtnHandlerInRef, loginMainBtnHandlerInRef, fetch
   };
 
 
-  
+
   // 트러블슈팅 65,66 해결로인해 이거 이제 필요없는듯.
   // const csrfFetchHandler = async () => {
 
@@ -112,39 +117,44 @@ function ServicesSection({ startBtnHandlerInRef, loginMainBtnHandlerInRef, fetch
 
 
 
-  // oauth 구현중(250917 16:10~)
+  // oauth 구현중(250917 16:10~) 
   const loginFetchHandler = useCallback(async () => {
 
     console.log("loginFetchHandler 내부 실행됨");
+
     try {
       const res = await fetch("/api/auth/me", {
         method: "GET",
         credentials: "include"
       })
       if (res.ok) {
-        const body = await res.json();
-        // 원하는 동작 실행
-        console.log("로그인됨, res.json 바디=>", body);
 
-        // 서버 로그인 성공시 Recoil 상태값 갱신
-        setLogin({ isLogin: true, user: body });
-      } else if (res.status === 401) {
-        // console.log("인증안됨 -> 로그인 페이지로 리다이렉트");
-        console.log("인증안됨");
-        // 인증 안됨 → 로그인 페이지로 리다이렉트
+        // 나중에 스프링 엔드포인트 응답을 리팩토링하여 resBody에 원하는 데이터 설정 가능
+        const resBody = await res.json();
+
+        console.log("로그인 성공, resBody=>", resBody);
+
+        // 서버 로그인 성공시 Recoil 상태값 logIn을 갱신
+        setLogin({
+          isLogin: true,
+          user: {
+            id: resBody?.data?.id,
+            name: resBody?.data?.name,
+            email: resBody?.data?.email,
+            provider: resBody?.data?.provider,
+          }
+        });
+
 
       }
 
-    } catch (err) {
-      console.error("loginFetchHandler 에러 발생=>", err);
+    } catch (error) {
+      // 이 핸들러에서는 에러가 나더라도 표시하지 않는다. 왜냐하면 로그인 여부만 알면 되는 fetch 핸들러이고,
+      // 오류는 실제 비지니스 로직에서 처리하기 때문이다. 
+      console.error("loginFetchHandler 내부 에러 발생=>", error);
     }
 
   }, []);
-
-  console.log("login 객체상태=>", login);
-
-
-
 
 
 
@@ -157,11 +167,17 @@ function ServicesSection({ startBtnHandlerInRef, loginMainBtnHandlerInRef, fetch
     try {
 
       const token = Cookies.get('XSRF-TOKEN');
-      console.log("token===",token)
+      console.log("token===", token)
 
       // GET fetch 일때 입장
       if (httpMethod === "GET") {
+
         console.log("GET fetch 입장")
+
+        if (requestData) {
+          apiPathname = `${apiPathname}?userId=${encodeURIComponent(requestData)}`;
+        }
+
         const res = await fetch(apiPathname,
           {
             credentials: "include"
@@ -176,30 +192,68 @@ function ServicesSection({ startBtnHandlerInRef, loginMainBtnHandlerInRef, fetch
         return resJson;
       }
 
-      // POST, PUT fetch 일때 입장
+      // POST, PUT fetch 인 경우 전부 입장
       else if (httpMethod === "POST" || httpMethod === "PUT") {
         console.log("POST 또는 PUT 입장")
-        const res = await fetch(apiPathname, {
-          headers: {
-            'X-XSRF-TOKEN': token,
-            'Content-Type': 'application/json'
-          },
-          method: httpMethod,
-          body: requestData ? JSON.stringify(requestData) : undefined ,
-          credentials: "include"
-        });
-        console.log("POST 또는 PUT fetch 정상 완료")
-        if (!res.ok) {
-          throw res;
+
+        const formLoginApi = "/api/formLogin";
+
+        // POST, PUT 요청 중에서 formLoginApi 일때 입장 (현재 큰 차이는 Content-Type 과 body 데이터 형식)
+        if (apiPathname === formLoginApi) {
+
+          const formData = new URLSearchParams();
+          formData.append("userId", requestData?.userId);
+          formData.append("password", requestData?.password);
+
+          const res = await fetch(apiPathname, {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              'X-XSRF-TOKEN': token,
+            },
+            method: httpMethod,
+            body: formData.toString(),
+            credentials: "include"
+          });
+
+          if (!res.ok && res.status !== 401) {
+            throw res;
+          }
+
+          const resJson = await res.json();
+          console.log("POST, PUT fetch 완료")
+          return resJson;
+
+
+
+        } else { // POST, PUT 요청 중에서 formLoginApi가 아닌 경우 입장
+
+          const res = await fetch(apiPathname, {
+            headers: {
+              'X-XSRF-TOKEN': token,
+              'Content-Type': 'application/json'
+            },
+            method: httpMethod,
+            body: requestData ? JSON.stringify(requestData) : undefined,
+            credentials: "include"
+          });
+
+          if (!res.ok) {
+            throw res;
+          }
+
+          const resJson = await res.json();
+          console.log("POST, PUT fetch 완료")
+          return resJson;
+
         }
-        return;
+
       }
 
       // DELETE fetch 일때 입장
       else if (httpMethod === "DELETE") {
         console.log("DELETE fetch 입장")
         const res = await fetch(apiPathname, {
-          headers: {'X-XSRF-TOKEN': token },
+          headers: { 'X-XSRF-TOKEN': token },
           method: 'DELETE',
           credentials: "include"
         });
@@ -269,8 +323,8 @@ function ServicesSection({ startBtnHandlerInRef, loginMainBtnHandlerInRef, fetch
 
       if (event.data.type === "OAUTH_SUCCESS") {
 
-        // 새로고침. (팝업닫히고 구글로고나 웹 이미지등이 깨지는 문제발생해서 깔끔하게 새로고침으로 처리)
-        window.location.reload();
+        // 첫화면으로 새로고침. (팝업닫히고 구글로고나 웹 이미지등이 깨지는 문제발생해서 깔끔하게 새로고침으로 처리)
+        window.location.replace("/");
       }
     };
 
@@ -308,14 +362,7 @@ function ServicesSection({ startBtnHandlerInRef, loginMainBtnHandlerInRef, fetch
 
   useLayoutEffect(() => {
     fetchHandlerInRef.current = fetchHandler;
-    }, []);
-
-  
-
-  // 트러블슈팅 65,66 해결로인해 이거 이제 필요없는듯.
-  // useLayoutEffect(() => {
-  //   csrfFetchHandler();
-  // }, []);
+  }, []);
 
 
   useLayoutEffect(() => {
@@ -386,11 +433,13 @@ function ServicesSection({ startBtnHandlerInRef, loginMainBtnHandlerInRef, fetch
     // 달력앱 전체는 이 섹션안에서 작동한다.
     <section ref={servicesSection} id="services" className="services section" style={{ display: "none" }}>
 
-
       <Routes>
         <Route path="/" element={<></>} />
+        <Route path="/sign-up" element={<SignUp servicesSection={servicesSection} fetchHandler={fetchHandler} />} />
+        <Route path="/sign-up/ok" element={<SignUpOk servicesSection={servicesSection} />} />
+        <Route path="/sign-in" element={<SignIn servicesSection={servicesSection} fetchHandler={fetchHandler} />} />
         <Route path="/home" element={<CalendarView navigator={navigator} fetchHandler={fetchHandler} servicesSection={servicesSection} />} />
-        <Route path="/home/error" element={<FetchError navigator={navigator} errorResInstance={errorResInstance} loginModal={loginModal} setLogin={setLogin} />} />
+        <Route path="/home/error" element={<FetchError navigator={navigator} errorResInstance={errorResInstance} loginModal={loginModal} setLogin={setLogin} loginModalInstance={loginModalInstance} />} />
         <Route path="/create" element={<CalendarCreate navigator={navigator} fetchHandler={fetchHandler} servicesSection={servicesSection} />} />
         <Route path="/calendar/update/:calendarId" element={<CalendarUpdate navigator={navigator} fetchHandler={fetchHandler} servicesSection={servicesSection} />} />
         <Route path="/calendar/:calendarId/item" element={<CalendarItemView navigator={navigator} fetchHandler={fetchHandler} servicesSection={servicesSection} />} />
@@ -398,7 +447,7 @@ function ServicesSection({ startBtnHandlerInRef, loginMainBtnHandlerInRef, fetch
         <Route path="/calendar/:calendarId/item/:calendarItemId/update" element={<CalendarItemUpdate navigator={navigator} fetchHandler={fetchHandler} servicesSection={servicesSection} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      <LoginModal loginModal={loginModal} />
+      <LoginModal loginModal={loginModal} loginModalInstance={loginModalInstance} servicesSection={servicesSection} />
 
 
     </section>

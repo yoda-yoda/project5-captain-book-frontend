@@ -2,6 +2,8 @@ import { loginAtom } from '../recoil/atoms'
 import { useRecoilState } from 'recoil'
 import LoginMainBtn from "./LoginMainBtn.jsx";
 import LogoutBtn from './LogoutBtn.jsx';
+import UserInfo from './UserInfo.jsx';
+import "../styles/MainHeader.css"
 
 
 function MainHeader({ loginMainBtnHandlerInRef, fetchHandlerInRef }) {
@@ -24,7 +26,10 @@ function MainHeader({ loginMainBtnHandlerInRef, fetchHandlerInRef }) {
                 <a href="/" className="logo d-flex align-items-center">
                     {/* <!-- Uncomment the line below if you also wish to use an image logo --> */}
                     {/* <!-- <img src="assets/img/logo.png" alt=""> --> */}
-                    <h1 className="sitename">Regna</h1>
+
+                    <img id="site-radius-image-logo" src="/img/DaeJangBu-radius-image-nobg-logo.png" alt="" />
+
+                    <h1 className="sitename">Captain Book</h1>
                 </a>
 
                 <nav id="navmenu" className="navmenu">
@@ -55,6 +60,11 @@ function MainHeader({ loginMainBtnHandlerInRef, fetchHandlerInRef }) {
                         {!login.isLogin &&
                             <LoginMainBtn login={login} loginMainBtnHandlerInRef={loginMainBtnHandlerInRef} />
                         }
+
+                        {login.isLogin &&
+                            <UserInfo login={login} />
+                        }
+
 
                         {login.isLogin &&
                             <LogoutBtn setLogin={setLogin} fetchHandlerInRef={fetchHandlerInRef} />

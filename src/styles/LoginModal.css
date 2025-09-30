@@ -1,0 +1,263 @@
+#loginModalLabel {
+  width: 150px;
+  height: auto;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+
+.modal-dialog.loginModal {
+  max-width: 450px;
+}
+
+
+.modal-header {
+  border-bottom: none;
+}
+
+
+.login-oauth-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  margin-top: 30px;
+  margin-bottom: 3px;
+}
+
+
+.login-form-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  margin-top: 10px;
+  margin-bottom: 80px;
+}
+
+
+#loginModalLabel {
+  margin-top: 0px;
+  padding-top: 0px;
+  margin-bottom: 40px;
+}
+
+
+
+
+
+
+.google-login-btn {
+  display: flex;
+  width: 80%;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  border: 2px solid rgb(239, 228, 228);
+  border-radius: 8px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 0px;
+  padding-right: 7px;
+
+  font-size: 18px;
+  color: black;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+
+.google-login-btn:hover {
+  background-color: rgb(239, 239, 239);
+}
+
+
+#google-login-logo {
+  width: 55px;
+  height: auto;
+  margin-right: 12px;
+}
+
+#google-login-btn-span {
+  color: rgb(37, 34, 34);
+  border: none;
+}
+
+
+
+
+
+
+
+
+
+.kakao-login-btn {
+  display: flex;
+  width: 80%;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(250, 225, 0);
+  border: 2px solid rgb(250, 225, 0);
+  border-radius: 8px;
+  padding: 7px;
+  font-size: 18px;
+  color: black;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+
+.kakao-login-btn:hover {
+  background-color: rgb(255, 238, 0);
+  border-color: rgb(255, 238, 0);
+}
+
+
+
+#kakao-login-logo {
+  width: 26px;
+  height: 26px;
+  margin-right: 12px;
+}
+
+#kakao-login-btn-span {
+  color: rgb(37, 34, 34);
+  border: none;
+}
+
+
+
+
+
+.naver-login-btn {
+  display: flex;
+  width: 80%;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(3, 199, 90);
+  border: 2px solid rgb(3, 199, 90);
+  border-radius: 8px;
+  padding: 7px;
+  font-size: 18px;
+  color: black;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.naver-login-btn:hover {
+  background-color: rgb(21, 218, 90);
+  border-color: rgb(21, 218, 90);
+}
+
+#naver-login-logo {
+  width: 28px;
+  height: 28px;
+  margin-right: 12px;
+}
+
+
+#naver-login-btn-span {
+  color: white;
+  border: none;
+}
+
+
+
+
+
+
+
+
+.form-sign-up-btn {
+  display: flex;
+  width: 80%;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(228, 236, 239);
+  border: 2px solid rgb(228, 236, 239);
+  border-radius: 8px;
+  padding: 7px;
+
+  font-size: 18px;
+  color: black;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+
+.form-sign-up-btn:hover {
+  background-color: rgb(239, 244, 246);
+  border-color: rgb(239, 244, 246);
+}
+
+
+#form-sign-up-logo {
+  width: 35px;
+  height: auto;
+  margin-right: 12px;
+  transform: translateX(-47%);
+}
+
+#form-sign-up-btn-span {
+  color: rgb(37, 34, 34);
+  border: none;
+}
+
+
+
+
+
+
+
+.form-login-btn {
+  display: flex;
+  width: 80%;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(228, 236, 239);
+  border: 2px solid rgb(228, 236, 239);
+  border-radius: 8px;
+  padding: 7px;
+
+  font-size: 18px;
+  color: black;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+
+.form-login-btn:hover {
+  background-color: rgb(239, 244, 246);
+  border-color: rgb(239, 244, 246);
+}
+
+
+
+#form-login-logo {
+  width: 35px;
+  height: auto;
+  margin-right: 12px;
+  transform: translateX(-23%);
+}
+
+#form-login-btn-span {
+  color: rgb(37, 34, 34);
+  border: none;
+}
+
+
+
+
+
+
+.modal-footer {
+  border-top: none;
+}

@@ -27,6 +27,7 @@ function CalendarCreate({ navigator, fetchHandler, servicesSection }) {
         await fetchHandler("/api/home", "POST", createRequestData);
         navigator("/home");
     }
+    
 
     useEffect(() => {
         // 자동 스크롤

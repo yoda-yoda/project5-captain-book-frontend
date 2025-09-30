@@ -92,8 +92,8 @@ function CalendarView({ navigator, fetchHandler, servicesSection }) {
 
                 {/* <!-- Section Title --> */}
                 <div className="container section-title" data-aos="fade-up">
-                    <h2> 달력 </h2>
-                    <p>Let's gilit</p>
+                    <h2> 대장부 </h2>
+                    <p> calendar </p>
                 </div>
                 {/* <!-- End Section Title --> */}
 

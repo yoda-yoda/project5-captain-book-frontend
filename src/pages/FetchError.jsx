@@ -1,11 +1,9 @@
 import { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import '../styles/FetchError.css'
 
-function FetchError({ navigator, errorResInstance, loginModal, setLogin }) {
+function FetchError({ navigator, errorResInstance, loginModal, setLogin, loginModalInstance }) {
     console.log("FetchError 컴포넌트 실행됨");
     console.log("errorResInstance =>", errorResInstance);
-
-    const loginModalInstance = useRef(null);
 
     const [finalErrorObject, setFinalErrorObject] = useState({
         errorStatus: 0,

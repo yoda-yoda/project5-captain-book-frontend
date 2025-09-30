@@ -6,9 +6,9 @@ export const loginAtom = atom({
         isLogin: false,
         user: {
             id: null,
-            email: null,
             name: null,
-            picture: null
+            email: null,
+            provider: null,
         }
     }
 })
