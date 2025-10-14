@@ -3,6 +3,7 @@ import "../styles/UserInfo.css"
 
 function UserInfo({ login }) {
 
+    // 리액트 전역 recoil login상태값에 정상적으로 데이터가 있을때 렌더링된다. 
     if (login?.user?.name) {
 
         return (

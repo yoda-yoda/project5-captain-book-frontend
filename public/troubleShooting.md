@@ -3044,5 +3044,363 @@ public static Member toEntity(MemberFormRegisterDto memberFormRegisterDto){
 
 ```
 
+
 ---
 
+# 트러블 슈팅 74
+
+### 문제:
+jwt 토큰 발급 구현중 의문이 2가지 있었다.
+
+첫째 의문 =>
+jwt의 setSubject로, String userId = authentication.getName(); 을 반환받아 사용하도록 구현하고있었는데,
+폼회원과 오아스회원을 동시 구현했기때문에 authentication 객체는 CustomUserDetails 일수도, CustomOAuth2User 일수도 있었다.
+이 경우 authentication.getName(); 은 어떻게 작동하는가가 의문이었다.
+
+둘째 의문 =>
+String userId = authentication.getName(); 이때 userId 변수는 반드시 유일값이어야 한다는 정보를 얻었다.
+그러나 이때 유일값이어야 하는 이유 또한 의문이었다. 또한 유일값이 아니어서 로직 변경이 필요했다. 
+
+
+
+### 모색:
+정보를 찾아 첫째 의문을 해결하였다.
+authentication 안의 Principal이 CustomOAuth2User 타입이면,
+authentication.getName()은 내부적으로 getName() 커스텀 메서드가 호출되고,
+CustomUserDetails 타입이면 내부적으로 getUsername() 커스텀 메서드가 호출되는 구조였다.
+
+둘째 의문 또한 해결하였다.
+저 변수가 유일값이어야 하는 그 이유는, jwt는 세션 기반과 달리 무상태성(stateless) 기반의 인증 방식이었고,
+이에 따라 인증 후 세션 기반과 달리 authentication 객체를 jwt토큰을 매개로 직접 서버에 설정해줘야했기 때문이었다.
+즉 세션 기반에서 세션id가 사용자의 유일한 식별자여서 해당 사용자만의 정보나 권한을 알아낼 수 있던 것처럼,
+jwt 기반에서 인증 매개는 jwt 토큰이었고 따라서 jwt 토큰이 사용자의 유일한 식별자여야했다.
+따라서 jwt 생성시 setSubject에 사용자만의 유일 식별자를 심어놔야했던 것이다.
+
+그렇다면 유일한 식별자를 찾아내야했고,
+마침 커스터마이징으로 member 엔티티가 CustomOAuth2User와 CustomUserDetails객체에 주입되는 구조로 만들어놨기때문에
+member 엔티티의 id를 식별자로 활용하기로 하였다.
+
+
+### 원인:
+그렇게 해야하는 이유에 대해 잘 몰랐던 것이 원인이었고,
+엔티티의 구조상 userId 하나로는 유니크값이 불충족 됐던것이 원인이었다.
+즉 authentication.getName();은 해당 멤버 엔티티의 userId 필드가 return 되는 상태였으나,
+userId는 provder와 함께 결합되어야 복합키로 유니크 값이 충족되는 구조였다.
+이 구조로 만든 이유는 오아스로그인 유저들을 하나의 Member 테이블에 통합 저장하기 위함이었다.
+즉 오아스 유저는 provider id가 userId가 되는데, provider가 같을땐 상관없지만 다른 경우 userId가 만에하나 겹칠수 있는 상황이 생기기때문이었다.
+
+
+
+### 해결:
+정보를 찾아 의문을 해결하고,
+member 엔티티가 커스터마이징으로 OAuth2User와 UserDetails 객체에 주입되는 구조로 만들어놨기때문에
+member 엔티티의 id를 식별자로 활용하며 해결하였다.
+
+즉 
+CustomOAuth2User 에서는 @Override
+    public String getName() {
+        return String.valueOf(member.getId());
+    } 로 메서드를 바꿨고 
+
+CustomUserDetails 에서는
+
+    @Override
+    public String getUsername() {
+        return String.valueOf(member.getId());
+    }
+
+로 메서드를 바꿔, 유일 식별자를 얻어 jwt토큰에 setSubject 하도록바꿔 해결하였다.
+또한  jwt 발급에 활용하기위한 메서드로, CustomUserDetailsService에 loadUserByMemberId 메서드를 추가하여 해결하였다.
+
+
+
+
+---
+
+# 트러블 슈팅 75
+
+### 문제:
+세션, csrf 토큰 방식을 jwt 방식으로 바꾸고, 테스트를 하는 상황이었다.
+일부러 이미 삭제된 달력 주소로 접근하였다. '해당 가계부가 존재하지않는다' 고 표시되는것에서 그쳐야하는데
+로그아웃까지 되어버리면서 로그인 모달창까지 나타나는 문제가 발생했다.
+
+
+### 모색:
+로그아웃+모달창 표시까지 된다는것은 fetchHandler에서 401 응답을 받았다는 의미였다.
+console.log를 천천히 살펴보며 순서를 따라가보고, 스프링의 로그도 검색해보았다.
+
+이때 로그의 순서를 보니 ResponseStatusExceptionResolver ->
+AnonymousAuthenticationFilter -> CustomAuthenticationEntryPoint 순서로 호출되었고,
+이것은 에러 디스패치(포워드)에 의한 재진입의 강한 증거로 보였다.
+
+
+### 원인:
+이미 404 Not Found 상태의 스프링 기본 에러 처리가 되도록 구현 되어있었지만,
+그 과정에서 시큐리티 필터체인이 에러 처리를 가로채며 미인증 상태로 인식하였고,
+다시 401상태로 바꿔서 에러 응답을 내보낸 것이 원인이었다.
+
+즉 상세하게 보자면
+스프링 부트의 4xx/5xx의 기본적인 에러 처리는 BasicErrorController가 작동하고 내부적으로 /error 라는 맵핑포인트로 요청을 포워드하며 처리하는데,
+이 요청은 새로운 서블릿 디스패치로 간주되고 이 때 시큐리티 필터 체인 전체가 재실행된다.
+
+이 재실행 시점에 SecurityContext 인증은 비어있다.
+왜냐하면 Stateless(무상태) 환경인 JWT 방식에서는 SecurityContext가 요청 간에 유지되지 않기때문이다.
+
+또한 /error 요청은 인증 헤더(JWT 토큰) 를 미포함하고, 설령 포함하고 있더라도 필터 체인이 재실행되는 시점에 토큰 검증이 제대로 되지 않을 수 있다.
+
+따라서 필터 체인은 인증되지 않은 상태로 보호된 /error 맵핑 포인트에 접근했다고 판단하여 CustomAuthenticationEntryPoint를 호출하고,
+미인증 응답으로 401 Unauthorized 응답을 기존 404 Not Found응답에 덮어씌워 클라이언트에게 보낸것이다.
+
+
+
+### 해결:
+시큐리티 설정에 .requestMatchers("/error", "/error/**").permitAll() 를 추가하여 해결하였다.
+이 경로는 컨트롤러 처리 중 발생한 예외를 웹 서버 규격에 맞게 응답으로 변환하는 것이고,
+인증이 필요한 맵핑포인트는 보안이 정상적으로 작동하고있으므로 안전하였다.
+
+---
+
+
+# 트러블 슈팅 76
+
+### 문제:
+http의 환경을 https로 바꾸고나서 오아스 로그인 테스트를 해보니,
+기존 팝업창에서 접속이 안됐다.
+
+### 모색:
+그 순간 오아스 구현할때 설정했던 구글 클라우드의 설정에서 승인된 리디렉션 URI 설정 등이 떠올랐다.
+
+### 원인:
+https프로토콜과 포트 8443으로 변경된 것은 url이 변경되었다는 것이고 
+따라서 기존 url 설정을 변경해야했던 것이 원인이었다.
+
+### 해결:
+오아스와 관련된 모든 url설정들을 변경하여 해결하였다.
+url 설정 뿐만아니라 스프링의 응답메시지에서 리디렉션 시켜주는 url 코드와,
+리액트의 오아스 팝업창 관련 url 코드 등도 전부 바꿔 해결하였다.
+
+
+---
+
+
+# 트러블 슈팅 77
+
+### 문제:
+리프레시 토큰을 redis로 구현할 준비중에, 잠시 도커 컨테이너로 테스트를 하는 중이었다.
+Dockerfile을 이용해 원본 .jar 파일 빌드, 포트 설정을 하여 docker image를 만들고,
+docker compose 로 해당 docker image 기반의 docker container를 실행하도록 하였다.
+그러나 localhost 8080 으로 접속되지가 않았다.
+
+### 모색:
+docker ps -a 명령어로, 컨테이너 히스토리를 살펴봤는데, jar가 실행중에 오류가 나서 자동으로 꺼져있었다.
+따라서 docker logs myContainer 명령어로 해당 컨테이너의 로그를 상세히 살펴봤고,
+[org.hibernate.exception.JDBCConnectionException: unable to obtain isolated JDBC connection [Communications link failure ...]]
+오류 로그가 보였다.
+
+### 원인:
+원본 프로젝트 yml 파일의 mysql DB 설정이 'localhost'로 하드코딩 되어있었고,
+도커 가상환경엔 mysql이 존재하지않아 DB 연결에 실패한 것이 원인이었다.
+
+즉 Dockerfile을 통해 원본 프로젝트를 build하여 최종 실행파일인 .jar를 만들어서 이를 활용하여
+도커 이미지를 만들었고, 이 이미지를 동적으로 실행한 인스턴스인 도커 컨테이너를 도커 컴포즈안의 서비스 1개로 등록하여 실행하였다.
+
+그러면 도커 컨테이너들은 각각 리눅스 기반 가상 환경에서 마치 독립된 1개의 컴퓨터처럼 작동하고,
+그곳에서 .jar가 실행된것인데 이 .jar 속의 yml 파일 설정엔 mysql DB가 'localhost' 라는 이름으로 하드코딩 되어있었으므로
+해당 리눅스 컴퓨터에서는 'localhost' 라는 것을 자기자신으로 인식하며 그 환경안에서 mysql 서버를 찾은 것이다.
+하지만 mysql 서버는 해당 환경에 존재하지 않았기때문에 DB 연결이 실패하며 오류가 난것이다.
+
+
+### 해결:
+도커 컴포즈의 services 속성에 mysql 데이터베이스 컨테이너를 1개 더 추가하여 해결하였다.
+
+services 는 그 하위에 각각의 컨테이너를 별칭으로 등록해놓을 수 있고,
+이 compose를 실행하면 모든 컨테이너들이 한번에 실행되며 각 컨테이너들은 각각 독립된 가상 ip 주소를 갖는다.
+그러나 내부적으로는 각 DNS 서버에 모든 services 별칭들이 등록되어있어서 모든 ip 주소에 손쉽게 연결이 가능한 원리로 문제가 해결되었다.
+
+
+---
+
+
+# 트러블 슈팅 78 
+
+### 문제:
+redis를 도커로 구현하였고, 폼로그인 리프레시 토큰과 재발급 로직까지 구현하였다.
+테스트 도중 일부러 개발자 도구의 쿠키에서 리프레시 토큰을 수동으로 삭제하고, 로그아웃 버튼을 눌렀고
+로그아웃 처리는 잘 되었다. 그러나 잠깐이지만 화면에 jwt 관련 오류메시지가 예상치 않게 보였다.
+
+
+### 모색:
+에러가 발생한 구체적인 상황을 알고있었기때문에, 리프레시 토큰이 없을때의 logout 로직을 천천히 따라가보았다.
+리액트에서 콘솔로 토큰들을 출력해봤지만 정상적이었고,
+백엔드 맵핑포인트에서도 access token과 refresh token이 요청메시지에서 null일때의 로직을 분리처리 해놨기때문에 토큰문자열의 문제는 아니라고 생각했다.
+
+
+### 원인:
+리액트의 LogoutBtn.jsx의 로그아웃 onClick 핸들러에서,
+공용 fetchHandler로 로그아웃 요청을 보내기전에 이미 쿠키에서 삭제한 것이 원인이었다.
+그러나 fetchHandler 안에서는 처음에 local storage에서 액세스 토큰을 추출하여 모든 요청에 재사용하도록 구현되어 있었다.
+그러다보니, accessToken 변수는 undefined 였고 이것이 서버로 전송됐을때 파싱 오류가 난것이었다.
+
+의문점은 서버에서 이미 토큰값이 null인지 분기 처리를 해놓았는데 어떻게 이것을 통과했냐는 것이다.
+원인은 
+ String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer "))
+
+이렇게 Authorization와 Bearer 까지만 체크하는 것이 원인이었다.
+리액트 에서는 "Authorization": `Bearer ${accessToken}`, 이렇게 전송되도록 하니까 if문 조건에 맞아 통과한 것이다.
+
+
+
+### 해결:
+리액트 로그아웃 핸들러 내부의 코드 순서를 바꿔 해결하였다.
+그렇게 fetch에 액세스 토큰과 리프레시 토큰 모두를 담아 보내고,
+이에 따라 서버에서는 redis에 저장되는 토큰 무효화에 더욱 유리해졌다.
+이후 서버에 대한 요청이 성공하든 실패하든 그 밑으로 코드가 흘러가 액세스토큰 또한 삭제되며 문제를 해결하였다.
+
+
+
+---
+
+
+# 트러블슈팅 79
+
+### 문제:
+jwt 액세스 토큰과 리프레시 토큰 발급 후 구현과 테스트까지 마친 상태였다.
+로그아웃까지 된 상태에서 우연히 뒤로가기를 하다보니 달력 생성 url( /create) 에서,
+"로그인이 필요합니다" 라는 에러화면이 표시되어야하는데 예상과 달리 달력 생성 페이지가 그대로 보였다.
+
+
+### 모색:
+전역 recoil의 login상태 분기에 따라 jsx 내용이 return 되게 하든지, 아닌지로 처리하려 하였다.
+그러나 그렇게하면 화면에 표시만 안될뿐이지, 다른 컴포넌트처럼 자동으로 통합에러화면으로 가지는 못했다.
+그래서 정식 인증 맵핑포인트인 ( /auth/me )로 fetch하는 로직을 만들어 해결하려했지만,
+그러면 달력을 생성하러 들어갈때마다 매번 무거운 인증 처리 로직이 작동하여 성능 과부하가 예상되었다.
+
+
+### 원인:
+달력 생성 컴포넌트는 마운트시 바로 최신 값을 확인할 상황이 없었기 때문에 첫 마운트될때 fetch 통신 로직을 생략했던 것이 원인이었다.
+즉 이미 다른 컴포넌트 에서는, 첫 마운트가 되면 바로 자동으로 최신 값 갱신을 위해 useLayoutEffect에서 fetch핸들러가 작동하며
+미인증 상태 또는 fetch 통신 오류가 확인되고, 따라서 공용 fetchHandler의 통합 에러처리로 정상적인 에러 화면이 표시되는 상태였지만, 
+달력 생성 컴포넌트는 달력 생성시에만 fetch가 필요했기때문에, 마운트시에 fetch 통신으로 미인증 상태가 확인될 길이 없던 것이 원인이었다.
+
+
+### 해결:
+스프링에 아래와 같이 무겁지 않은
+fetch 통신 맵핑포인트( /auth/ping )를 만들어 인증 상태와 fetch 상태가 잘 확인되도록 하였고
+이것을 useLayoutEffect 내에서 첫 마운트시 호출되도록 만들어 해결하였다.
+
+// 시큐리티 필터로 인증 상태만 체크하기 위한 맵핑포인트 
+    @GetMapping("/auth/ping")
+    public ResponseEntity<ResponseData<Map<String, String>>> getAuthFetchStatus() {
+
+        Map<String, String> authFetchSuccessData = Map.of(
+                "message", "통신 성공"
+        );
+
+        return ResponseEntity
+                .ok(ResponseData.<Map<String, String>>builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .data(authFetchSuccessData)
+                        .build());
+    }
+
+
+
+---
+
+# 트러블슈팅 80
+
+### 문제:
+트러블슈팅 79를 해결하다가, 다른 맵핑포인트의 직접 접근 케이스를 방어하지 않은것이 떠올랐다.
+즉 오아스 팝업창 로그인 인증 성공후, 리다이렉트되는 전용 리액트 맵핑포인트 라우터 ( /oauth/point ) 를 구현하였는데,
+이를 직접 url로 접근하는 경우의 방어 로직을 구현해야했다.
+
+
+### 모색:
+시간이 부족하여 챗지피티에게 물어보며, 간단한 if문을 추가하는것으로 도움을 받았다.
+
+즉
+useLayoutEffect(() => {
+
+        // URL에서 쿼리 파라미터를 추출.
+        const params = new URLSearchParams(window.location.search);
+        const accessToken = params.get('accessToken');
+
+	
+	[이곳에 if문 추가하기]
+     
+
+        // 부모 창에 토큰과 함께 메시지를 전송.
+        if (window.opener && !window.opener.closed) {
+            if (accessToken) {
+
+                window.opener.postMessage({
+                    type: "OAUTH_SUCCESS",
+                    accessToken: accessToken
+                }, "https://localhost:3000");
+            }
+
+        }
+        // 팝업 창 닫기
+        window.close();
+    }, []);
+
+
+기존 위의 [이곳에 if문 추가하기] 부분에
+
+if (!accessToken) {
+	window.location.replace("/");
+	return;         
+  }
+
+이 코드만 추가하는 조언을 받았다.
+
+그러나 다시 여러 케이스를 생각해보니,
+이렇게 되면 만약 팝업창에서 accessToken이 빈값이었을때 바로 팝업창이 리다이렉트되며 return 으로 코드가 끝나버리게 된다.
+따라서 오아스 로그인 팝업창은 닫히지않고 홈화면으로 이동해버리는 의도치 않는 상황이 발생했다.
+
+
+
+### 원인:
+url로 직접 접근했을때, 팝업창에서 정상 로직대로 진행됐을때,
+accessToken이 빈값인 경우일때 등 모든 경우에서 방어가 이뤄지는 코드가 아닌것이 원인이었다. 
+
+
+
+### 해결:
+아래와 같이,
+모든 경우의 수에서 안전하게 작동할 수 있는 조건문 if (!window.opener)를 추가하는 방법이 떠올라서 해결하였다. 
+
+useLayoutEffect(() => {
+
+        // URL에서 쿼리 파라미터를 추출.
+        const params = new URLSearchParams(window.location.search);
+        const accessToken = params.get('accessToken');
+
+
+        if (!accessToken) {
+
+            if (!window.opener) {
+
+                // url로 해당 라우터로 직접 접근한 경우는 리다이렉트 처리한다.
+                window.location.replace("/");
+                return;
+            }
+        }
+
+        // 부모 창에 토큰과 함께 메시지를 전송.
+        if (window.opener && !window.opener.closed) {
+            if (accessToken) {
+
+                window.opener.postMessage({
+                    type: "OAUTH_SUCCESS",
+                    accessToken: accessToken
+                }, "https://localhost:3000");
+            }
+
+        }
+        // 팝업 창 닫기
+        window.close();
+    }, []);
+
+---

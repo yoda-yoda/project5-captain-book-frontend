@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState, useLayoutEffect, useCallback } from "react";
-import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
-import Cookies from 'js-cookie';
-import { loginAtom } from '../recoil/atoms'
+import { useEffect, useState, } from "react";
 import { useRecoilState } from 'recoil'
+import { useNavigate, } from "react-router-dom";
+import { loginAtom } from '../recoil/atoms'
 import "../styles/SignUp.css"
 
 
+// 폼회원 가입 페이지이다.
 function SignUp({ servicesSection, fetchHandler }) {
 
     const navigator = useNavigate();
@@ -15,24 +15,20 @@ function SignUp({ servicesSection, fetchHandler }) {
     const [userId, setUserId] = useState("");
     const [userPassword, setUserPassword] = useState("");
     const [userPasswordCheck, setUserPasswordCheck] = useState("");
-    const [login, setLogin] = useRecoilState(loginAtom);
+    const [login] = useRecoilState(loginAtom);
 
 
+    // 유효성을 확인하는 상태값 변수들이다
     const [invalidUserName, setInvalidUserName] = useState(false);
     const [invalidUserEmail, setInvalidUserEmail] = useState(false);
     const [invalidUserId, setInvalidUserId] = useState(false);
     const [idExists, setIdExists] = useState(false);
     const [invalidUserPassword, setInvalidUserPassword] = useState(false);
     const [invalidUserPasswordCheck, setInvalidUserPasswordCheck] = useState(false);
-
-
-    const [errorResInstance, setErrorResInstance] = useState({
-        status: 0,
-        statusText: ""
-    });
-
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+
+    // 특정 형식의 입력값으로 검증하기위한 정규표현식이다.
     const userNameRegExp = /^[가-힣a-zA-Z0-9]{2,20}$/;
     const userEmailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const userIdRegExp = /^[a-z][a-z0-9_]{4,19}$/;
@@ -47,7 +43,7 @@ function SignUp({ servicesSection, fetchHandler }) {
     }
 
 
-
+    // 이름의 입력값이 유효한지 검증하는 로직이다 
     const checkUserName = () => {
 
         if (!userNameRegExp.test(userName)) {
@@ -58,6 +54,8 @@ function SignUp({ servicesSection, fetchHandler }) {
     }
 
 
+    // 이메일 입력값이 유효한지 검증하는 로직이다
+    // 현재 구현상 이메일은 선택사항이다 
     const checkUserEmail = () => {
 
         if (!userEmail) {
@@ -74,7 +72,7 @@ function SignUp({ servicesSection, fetchHandler }) {
     }
 
 
-
+    // 아이디 입력값이 유효한지 검증하는 로직이다
     const checkUserId = async () => {
 
         if (!userIdRegExp.test(userId)) {
@@ -91,11 +89,8 @@ function SignUp({ servicesSection, fetchHandler }) {
 
 
 
-
+    // 이미 존재하는 아이디인지 서버에서 검증하는 로직이다
     const checkIdExists = async () => {
-
-        const token = Cookies.get('XSRF-TOKEN');
-        console.log("token===", token)
 
         const resJson = await fetchHandler("/api/members/exits", "GET", userId);
         if (resJson?.data === true) {
@@ -107,6 +102,7 @@ function SignUp({ servicesSection, fetchHandler }) {
 
     }
 
+    // 비밀번호 입력값이 유효한지 검증하는 로직이다
     const checkUserPassword = () => {
 
         if (!userPasswordRegExp.test(userPassword)) {
@@ -123,6 +119,8 @@ function SignUp({ servicesSection, fetchHandler }) {
 
     }
 
+
+    // 비밀번호 확인 입력값이 유효한지 검증하는 로직이다
     const checkUserPasswordCheck = () => {
 
         if (userPasswordCheck !== userPassword) {
@@ -133,11 +131,12 @@ function SignUp({ servicesSection, fetchHandler }) {
     }
 
 
+    // 모든 입력값의 유효성을 검증하는 로직이다 
     const allInputIsOk = () => {
 
         return (
 
-            // 값이 전부 false 여야 유효한 입력값이며, 그때 true가 된다. 
+            // 변수들의 값이 전부 false 여야 유효한 입력값이며, 그때 true가 된다. 
             !(invalidUserName ||
                 invalidUserEmail ||
                 invalidUserId ||
@@ -147,7 +146,7 @@ function SignUp({ servicesSection, fetchHandler }) {
 
             &&
 
-            // 전부 빈값이 아니어야 유효한 입력값이며, 그때 true가 된다.
+            // 변수들이 전부 빈값이 아니어야 유효한 입력값이며, 그때 true가 된다.
             (userName !== "" &&
                 userId !== "" &&
                 userPassword !== "" &&
@@ -155,9 +154,6 @@ function SignUp({ servicesSection, fetchHandler }) {
         )
 
     }
-
-
-
 
 
 
@@ -175,8 +171,13 @@ function SignUp({ servicesSection, fetchHandler }) {
 
 
         if (allInputIsOk()) {
-            await fetchHandler("/api/members", "POST", createRequestData);
-            navigator(`/sign-up/ok`);
+            const res = await fetchHandler("/api/members", "POST", createRequestData);
+            // 만약 오류가 나면 공용 fetchHandler 내부에서 자동 에러 처리되어 fetchError.jsx가 렌더링 될것이다.
+
+            if (res) {
+                // 성공해야만 입장될 것이며 회원가입 성공 페이지로 이동한다.
+                navigator(`/sign-up/ok`);
+            }
 
         } else {
             setIsSubmitting(false);
@@ -188,14 +189,13 @@ function SignUp({ servicesSection, fetchHandler }) {
 
 
     useEffect(() => {
+        // 자동 스크롤
         servicesSection.current.scrollIntoView({ behavior: 'smooth' });
     }, []);
 
 
 
-
-
-    // 로그인이 안된 상태(인증 fetch가 실패한 상태)에서만 회원가입 컴포넌트가 보이도록 한다.
+    // 로그인이 안된 상태(인증 fetch가 실패한 상태)에서만 폼가입 컴포넌트가 보이도록 한다.
     if (!login?.isLogin) {
 
         return (
@@ -305,8 +305,8 @@ function SignUp({ servicesSection, fetchHandler }) {
         )
     }
 
-    // 로그인이 된 상태(인증 fetch가 성공한 상태)에서 접근하면 리다이렉트 한다.
     else {
+        // 로그인이 된 상태(인증 fetch가 성공한 상태)에서 접근하면 리다이렉트 한다.
         window.location.replace("/");
         return null;
     }

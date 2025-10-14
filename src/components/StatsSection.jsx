@@ -1,5 +1,4 @@
 
-
 function StatsSection() {
 
     return (
@@ -42,9 +41,7 @@ function StatsSection() {
                         </div>
                     </div>
                     {/* <!-- End Stats Item --> */}
-
                 </div>
-
             </div>
 
         </section>

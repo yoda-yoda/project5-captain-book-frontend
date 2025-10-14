@@ -1,24 +1,26 @@
 
-import { useEffect, useRef, useState, useLayoutEffect, useCallback } from "react";
-import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
-import { loginAtom } from '../recoil/atoms'
+import { useNavigate, } from "react-router-dom";
 import { useRecoilState } from 'recoil'
+import { loginAtom } from '../recoil/atoms'
+import { useEffect, } from "react";
 import "../styles/SignUpOk.css"
 
 
 function SignUpOk({ servicesSection }) {
 
-
     const navigator = useNavigate();
 
-    const [login, setLogin] = useRecoilState(loginAtom);
+    const [login] = useRecoilState(loginAtom);
 
 
     useEffect(() => {
+        // 자동 스크롤
         servicesSection.current.scrollIntoView({ behavior: 'smooth' });
     }, []);
 
 
+
+    // 로그인이 안된 상태(인증 fetch가 실패한 상태)에서만 폼로그인 성공 컴포넌트가 보이도록 한다.
     if (!login?.isLogin) {
         return (
 
@@ -53,7 +55,7 @@ function SignUpOk({ servicesSection }) {
 
         )
     } else {
-
+        // 로그인이 된 상태(인증 fetch가 성공한 상태)에서 접근하면 리다이렉트 한다.
         window.location.replace("/");
         return null;
 

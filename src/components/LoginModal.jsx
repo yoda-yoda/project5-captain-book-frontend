@@ -1,14 +1,14 @@
-import { useCallback, useEffect, useRef, useState, useLayoutEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useEffect, } from "react";
 import "../styles/LoginModal.css"
 
 function LoginModal({ loginModal, loginModalInstance, servicesSection }) {
 
     const navigator = useNavigate();
 
-    
+
     const googleLoginHandler = () => {
-        const url = "http://localhost:8080/oauth2/authorization/google";
+        const oauthLoginUrl = "https://localhost:8443/oauth2/authorization/google";
 
         // 팝업 창 옵션 설정 (너비, 높이 등)
         const width = 500;
@@ -17,7 +17,7 @@ function LoginModal({ loginModal, loginModalInstance, servicesSection }) {
         const top = (window.innerHeight - height) / 2;
 
 
-        window.open(url, 'googleLoginPopup',
+        window.open(oauthLoginUrl, 'googleLoginPopup',
             `width=${width},height=${height},left=${left},top=${top},resizable=no,scrollbars=yes`
         );
     }
@@ -50,10 +50,11 @@ function LoginModal({ loginModal, loginModalInstance, servicesSection }) {
 
 
 
-
-
     useEffect(() => {
+
         if (!loginModalInstance.current) {
+            // 모달 인스턴스가 존재하지않으면 모달 DOM의 새 인스턴스를 생성
+
             loginModalInstance.current = new window.bootstrap.Modal(loginModal.current);
         }
     }, []);
@@ -75,16 +76,16 @@ function LoginModal({ loginModal, loginModalInstance, servicesSection }) {
 
                         <div className="login-oauth-btn-container">
 
-                            <img className="" id="loginModalLabel" src="/img/DaeJangBu-logo.jpg"/>
+                            <img className="" id="loginModalLabel" src="/img/DaeJangBu-logo.jpg" />
 
 
-                            <a className="kakao-login-btn" onClick={() => { alert("현재 준비중입니다.") }}>
+                            <a className="kakao-login-btn" onClick={() => { alert("현재 준비중 입니다.\n구글 로그인을 이용해주세요.") }}>
                                 <img id="kakao-login-logo" src="/img/kakao-logo.png" alt="" />
                                 <span id="kakao-login-btn-span">카카오로 시작하기</span>
                             </a>
 
 
-                            <a className="naver-login-btn" onClick={() => { alert("현재 준비중입니다.") }}>
+                            <a className="naver-login-btn" onClick={() => { alert("현재 준비중 입니다.\n구글 로그인을 이용해주세요.") }}>
                                 <img id="naver-login-logo" src="/img/naver-logo.png" alt="" />
                                 <span id="naver-login-btn-span">네이버로 시작하기</span>
                             </a>

@@ -14,15 +14,15 @@ function MainFooter() {
 
                 <p>It makes starting your account book simple and convenient.</p>
                 <div className="social-links d-flex justify-content-center">
-                    <a href=""><i className="bi bi-twitter-x"></i></a>
-                    <a href=""><i className="bi bi-facebook"></i></a>
-                    <a href=""><i className="bi bi-instagram"></i></a>
-                    <a href=""><i className="bi bi-skype"></i></a>
-                    <a href=""><i className="bi bi-linkedin"></i></a>
+                    <a style={{ cursor: 'pointer' }} onClick={() => { alert("이용해 주셔서 감사합니다.") }}><i className="bi bi-twitter-x"></i></a>
+                    <a style={{ cursor: 'pointer' }} onClick={() => { alert("이용해 주셔서 감사합니다.") }}><i className="bi bi-facebook"></i></a>
+                    <a style={{ cursor: 'pointer' }} onClick={() => { alert("이용해 주셔서 감사합니다.") }}><i className="bi bi-instagram"></i></a>
+                    <a style={{ cursor: 'pointer' }} onClick={() => { alert("이용해 주셔서 감사합니다.") }}><i className="bi bi-skype"></i></a>
+                    <a style={{ cursor: 'pointer' }} onClick={() => { alert("이용해 주셔서 감사합니다.") }}><i className="bi bi-linkedin"></i></a>
                 </div>
                 <div className="container">
                     <div className="copyright">
-                        <span>웹 애플리케이션</span> <strong className="px-1 sitename">대장부</strong> <span>방문해주셔서 감사합니다.</span>
+                        <span>웹 애플리케이션</span> <strong className="px-1 sitename">대장부(Captain Book)</strong> <span>방문해주셔서 감사합니다.</span>
                     </div>
                     <div className="credits">
                         {/* <!-- All the links in the footer should remain intact. -->

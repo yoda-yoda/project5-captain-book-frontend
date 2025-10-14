@@ -1,7 +1,7 @@
 import StartBtn from "../components/StartBtn";
 
 
-function HeroSection({startBtnHandlerInRef}) {
+function HeroSection({ startBtnHandlerInRef }) {
 
 
     return (
@@ -16,15 +16,15 @@ function HeroSection({startBtnHandlerInRef}) {
                     <div className="col-lg-8">
                         <h2> The Captain Book Project </h2>
                         <p> It makes starting your account book simple and convenient. </p>
-                        <StartBtn startBtnHandlerInRef={startBtnHandlerInRef}/>
+                        <StartBtn startBtnHandlerInRef={startBtnHandlerInRef} />
                     </div>
                 </div>
             </div>
 
         </section>
-        /* <!-- /Hero Section --> */ 
+        /* <!-- /Hero Section --> */
 
-    
+
 
     );
 }

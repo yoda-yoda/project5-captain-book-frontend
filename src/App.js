@@ -1,15 +1,15 @@
 import { useLayoutEffect, useRef } from 'react';
 import { RecoilRoot } from 'recoil';
 import MainHeader from './components/MainHeader.jsx';
-import MainPage from './pages/MainPage.jsx';
 import MainFooter from './components/MainFooter.jsx';
 import PreLoader from './components/PreLoader.jsx';
 import ScrollTop from './components/ScrollTop.jsx';
+import MainPage from './pages/MainPage.jsx';
 
 // <!-- Vendor CSS Files -->
-import './styles/aos.css';
-import './styles/glightbox.min.css';
 import './styles/swiper-bundle.min.css';
+import './styles/glightbox.min.css';
+import './styles/aos.css';
 
 // <!-- Main CSS File -->
 import './styles/main.css';
@@ -20,17 +20,11 @@ import './styles/Loading.css'
 
 function App() {
 
-  const loginMainBtnHandlerInRef = useRef(() => {});
-
-  const fetchHandlerInRef = useRef(() => {});
-
-  console.log("App 실행")
-
-  // const loadScrollHandler = () => {
-  //   window.scrollTo(0, 0);
-  // }
-
-
+  // 콜백 레지스트리(handlerRef) 방식을 활용하기 위한 useRef 이다.
+  // 이 방식을 이용하면 DOM을 직접 추출할 필요가 없고,
+  // ref의 current값에 콜백 함수 자체를 담아 함수 참조를 형제 컴포넌트끼리도 공유할 수 있다.
+  const loginMainBtnHandlerInRef = useRef(() => { });
+  const fetchHandlerInRef = useRef(() => { });
 
 
   useLayoutEffect(() => {
@@ -38,15 +32,17 @@ function App() {
     script.src = '/js/main.js';
     script.async = true;
     document.body.appendChild(script);
+
+    // 스크롤을 수동으로 설정한다
     window.history.scrollRestoration = 'manual';
-    // window.addEventListener('load', loadScrollHandler);
 
 
 
     return () => {
-      // window.removeEventListener('load', loadScrollHandler);
-      
+
     }
+
+
   }, []);
 
 
