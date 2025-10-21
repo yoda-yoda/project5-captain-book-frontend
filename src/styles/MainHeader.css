@@ -1,0 +1,10 @@
+
+#site-radius-image-logo {
+  width: 50px !important;         /* 기본 로고 너비 */
+  height: auto !important;        /* 비율 유지 */
+  max-width: none !important;     /* 제한 제거 */
+  max-height: none !important;    /* 제한 제거 */
+  display: block !important;      /* flex shrink 영향 제거 */
+  object-fit: contain !important; /* 이미지 비율 유지 */
+  flex-shrink: 0 !important;      /* 부모 flex 축소 방지 */
+}

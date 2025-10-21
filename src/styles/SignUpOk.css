@@ -1,0 +1,98 @@
+.container.sign-up-ok-contents {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    margin-top: 0px;
+    margin-bottom: 20%;
+
+}
+
+
+
+.top-scroll-btn-container {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border: 0;
+    cursor: pointer;
+    background-color: white;
+
+}
+
+
+.top-scroll-btn-container:hover .bi.bi-arrow-up-short.top-scroll-btn {
+    transition: 20%;
+    color: rgb(103, 233, 192);
+}
+
+
+
+.bi.bi-arrow-up-short.top-scroll-btn {
+    display: inline;
+    font-size: 30px;
+    color: rgb(45, 201, 151);
+    transition: 0.5s ease;
+}
+
+
+
+.bi.bi-arrow-up-short.top-scroll-btn::before {
+    display: inline;
+}
+
+
+
+.sign-up-ok-title {
+    margin-top: 30px;
+}
+
+.container.sign-up-ok-inner-contents {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+
+.container.sign-up-ok-data-flex-box {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    width: 80%;
+
+}
+
+
+#dae-jang-bu-logo {
+    width: 170px;
+    height: auto;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+
+.container.btn-sign-up-ok {
+    width: 35%;
+}
+
+
+#btn-sign-up-ok {
+    width: 100%;
+    margin-top: 50px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: white;
+    transition: 0.5s;
+    border: 2px solid #cccccc;
+    cursor: pointer;
+    transition: 0.5s ease;
+}
+
+#btn-sign-up-ok:hover {
+    background-color: #2dc997;
+    border-color: #2dc997
+}
+

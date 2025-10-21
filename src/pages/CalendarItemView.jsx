@@ -1,13 +1,13 @@
-import { Link, useParams } from "react-router-dom";
 import { useLayoutEffect, useEffect, useState } from "react";
-import { selectedCalendarItem } from '../recoil/atoms'
-import { useRecoilState } from 'recoil'
+import { Link, useParams } from "react-router-dom";
 import Loading from "../components/Loading.jsx";
 import '../styles/CalendarItemView.css'
 
+
+// 달력 속 아이템 목록을 보여주는 페이지이다
+// 명세상 아이템은 없어도 되지만 상위 객체인 달력은 반드시 존재하는것이 정상이다
 function CalendarItemView({ navigator, fetchHandler, servicesSection }) {
 
-    console.log("CalendarItemView 실행")
 
     const { calendarId } = useParams();
     const [resDtoData, setResDtoData] = useState({
@@ -23,54 +23,69 @@ function CalendarItemView({ navigator, fetchHandler, servicesSection }) {
     const itemTypePlus = "수입"; // 현재 명세상 "수입"
     const itemTypeMinus = "지출"; // 현재 명세상 "지출"
 
+
+    // 데이터의 식별자를 중계하기위한 중계 변수이다
+    // 실제 데이터에 접근할수있는 DOM과 데이터를 처리하는 DOM 요소의 스코프가 분리되어있기때문이다
     let calendarItemIdVariable = "0";
 
 
+    // 아이템 수정 페이지로 보내주는 아이템 수정 버튼 핸들러이다
     const itemUpdateNavigateHandler = (calendarId, calendarItemResponseDto) => {
 
         navigator(`/calendar/${calendarId}/item/${calendarItemResponseDto.id}/update`);
     };
 
+
+    // 아이템 삭제 시도 버튼을 눌렀을때, 해당 아이템 식별자를 매개변수로 받아 중계 변수에 담아주는 핸들러이다
     const itemDeleteBtnClickHandler = (calendarItemResponseDtoId) => {
         calendarItemIdVariable = calendarItemResponseDtoId;
-        console.log("calendarItemIdVariable", calendarItemIdVariable);
     };
 
+
+    // 아이템 삭제 DELETE 요청 핸들러이다 매개변수로는 중계 변수 calendarItemIdVariable 이 들어간다
+    // 삭제 요청 이후엔 다시 checkFetchData를 호출하여 새 아이템 목록을 받아온다  
     const itemDeleteNavigateHandler = async (calendarItemId) => {
         setLoaded(false);
-        await fetchHandler(`/api/calendar/${calendarId}/item/${calendarItemId}/delete`, "DELETE");
+        await fetchHandler(`/api/calendar/item/${calendarItemId}/delete`, "DELETE");
         checkFetchData();
         servicesSection.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
 
-    
+    // 목적: 달력의 최신 상태와 아이템 목록의 최신 상태를 받아오기위한 fetch 요청 핸들러이다
     async function checkFetchData() {
-        
+
+        // 요청이 끝나기전까지 혹시 모를 상황과 명확함을 위해 setLoaded(false)를 호출한다
+        // 어차피 이미 false 상태라면 작동을 하지않고 넘어간다 
         setLoaded(false);
+
         const resDto = await fetchHandler(`/api/calendar/${calendarId}/item`, "GET");
 
-        // 현재 구현상 error가 발생하면 resDto는 undefined 이다.
+        // 현재 구현상, error가 발생하면 resDto는 undefined 이다
+        // 공용 fetchHandler 내부에서 모든 에러가 처리되기 때문이다
         if (resDto) {
+            // 데이터가 존재하면 상태값에 저장하고 loaded를 true로 만들어 화면을 표시한다
+
             setResDtoData(resDto?.data);
             setLoaded(true);
         }
     }
 
 
-    // 렌더링 진입시(뒤로가기 포함) 최신 데이터 갱신을 위한 useLayoutEffect의 fetch 로직이다.
+    // 첫 컴포넌트 진입시(뒤로가기 포함), 최신 데이터값 갱신을 위한 fetch 요청 로직이다
     useLayoutEffect(() => {
         checkFetchData();
     }, []);
 
+
     useEffect(() => {
+        // 자동스크롤
         servicesSection.current.scrollIntoView({ behavior: 'smooth' });
     }, []);
 
 
-
-    // calendarResponseDto 가 존재할때 jsx를 렌더링한다.
-    // (내부 속성에 접근시 만약의 경우 발생할 undefined 에러의 방어 코드)
+    // 현재 구현상 fetch 통신이 정상적으로 이뤄지고 달력이 존재하며 loaded가 true일때만 화면을 렌더링한다
+    // return 내부 속성에서 변수 접근시 만약의 경우 발생할 undefined 에러의 방어 코드이다 
     if (calendarResponseDto && loaded) {
         return (
 
@@ -102,19 +117,16 @@ function CalendarItemView({ navigator, fetchHandler, servicesSection }) {
                         </div>
 
                         <hr id="top-hr" className="top-hr" data-aos="fade-in"></hr>
-
                         {/* <!-- End item top --> */}
+
+
+
 
                         <div className="item-button-box-container" data-aos="fade-up">
 
                             <Link to={`/calendar/${calendarId}/item/create`}
                                 state={{ calendarResponseDto: calendarResponseDto }}
                                 className="calendar-item-create-btn"> + </Link>
-                            {/* <button onClick={ () => navigator("/home")} className="fall-back-container">
-                         <i class="bi bi-arrow-left-circle-fill fall-back"></i>
-                    </button> */}
-
-
 
                         </div>
 
@@ -240,25 +252,22 @@ function CalendarItemView({ navigator, fetchHandler, servicesSection }) {
                             </div>
                         </div>
 
-
-
-
                     </div>
                 </div>
             </div>
 
 
         )
-    } else if (!loaded) {
+    } else if (!loaded) { // 그렇지않으면 로딩 스피너가 돌아간다
         return (
 
             <div className="container calendar-item-view-contents">
-                <Loading />
+                <Loading navigator={navigator} />
             </div>
 
 
         )
-    } else {
+    } else { // 여기 도달할 가능성은 거의 없지만 만일을 대비한 장치다
         return (
             <div className="container calendar-item-view-contents">
                 <div> 데이터 접근에 문제가 발생하였습니다. </div>

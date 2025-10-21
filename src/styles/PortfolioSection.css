@@ -1,0 +1,47 @@
+#portfolio {
+
+  min-height: 430px;
+
+}
+
+
+.container.portfolio-info-list {
+  padding-top: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+
+.trouble-shooting-btn {
+  display: flex;
+  width: 50%;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  border: 2px solid #cccccc;
+  border-radius: 8px;
+  margin-top: 35px;
+  padding: 7px;
+  font-size: 18px;
+  color: black;
+  cursor: pointer;
+  transition: 0.5s ease;
+
+}
+
+
+.trouble-shooting-btn:hover {
+  background-color: #2dc997;
+  border-color: #2dc997
+}
+
+
+
+#trouble-shooting-btn-span {
+  color: rgb(37, 34, 34);
+  border: none;
+}

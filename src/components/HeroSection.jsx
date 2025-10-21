@@ -1,6 +1,7 @@
 import StartBtn from "../components/StartBtn";
 
-function HeroSection({startBtnHandlerInRef}) {
+
+function HeroSection({ startBtnHandlerInRef }) {
 
 
     return (
@@ -13,17 +14,17 @@ function HeroSection({startBtnHandlerInRef}) {
             <div className="container text-center" data-aos="fade-up" data-aos-delay="100">
                 <div className="row justify-content-center">
                     <div className="col-lg-8">
-                        <h2>Welcome to Our Website</h2>
-                        <p>We are team of talented designers making websites with Bootstrap</p>
-                        <StartBtn startBtnHandlerInRef={startBtnHandlerInRef}/>
+                        <h2> The Captain Book Project </h2>
+                        <p> It makes starting your account book simple and convenient. </p>
+                        <StartBtn startBtnHandlerInRef={startBtnHandlerInRef} />
                     </div>
                 </div>
             </div>
 
         </section>
-        /* <!-- /Hero Section --> */ 
+        /* <!-- /Hero Section --> */
 
-    
+
 
     );
 }

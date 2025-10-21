@@ -1,4 +1,4 @@
-
+import "../styles/MainFooter.css"
 
 function MainFooter() {
 
@@ -6,18 +6,23 @@ function MainFooter() {
 
         <footer id="footer" className="footer dark-background">
             <div className="container">
-                <h3 className="sitename">Regna</h3>
-                <p>Et aut eum quis fuga eos sunt ipsa nihil. Labore corporis magni eligendi fuga maxime saepe commodi placeat.</p>
+
+                <div className="footer-logo-title">
+                    <img id="footer-radius-logo" src="/img/DaeJangBu-radius-logo.png" alt="" />
+                    <h3 className="sitename">Captain Book</h3>
+                </div>
+
+                <p>It makes starting your account book simple and convenient.</p>
                 <div className="social-links d-flex justify-content-center">
-                    <a href=""><i className="bi bi-twitter-x"></i></a>
-                    <a href=""><i className="bi bi-facebook"></i></a>
-                    <a href=""><i className="bi bi-instagram"></i></a>
-                    <a href=""><i className="bi bi-skype"></i></a>
-                    <a href=""><i className="bi bi-linkedin"></i></a>
+                    <a style={{ cursor: 'pointer' }} onClick={() => { alert("이용해 주셔서 감사합니다.") }}><i className="bi bi-twitter-x"></i></a>
+                    <a style={{ cursor: 'pointer' }} onClick={() => { alert("이용해 주셔서 감사합니다.") }}><i className="bi bi-facebook"></i></a>
+                    <a style={{ cursor: 'pointer' }} onClick={() => { alert("이용해 주셔서 감사합니다.") }}><i className="bi bi-instagram"></i></a>
+                    <a style={{ cursor: 'pointer' }} onClick={() => { alert("이용해 주셔서 감사합니다.") }}><i className="bi bi-skype"></i></a>
+                    <a style={{ cursor: 'pointer' }} onClick={() => { alert("이용해 주셔서 감사합니다.") }}><i className="bi bi-linkedin"></i></a>
                 </div>
                 <div className="container">
                     <div className="copyright">
-                        <span>Copyright</span> <strong className="px-1 sitename">Regna</strong> <span>All Rights Reserved</span>
+                        <span>웹 애플리케이션</span> <strong className="px-1 sitename">대장부(Captain Book)</strong> <span>방문해주셔서 감사합니다.</span>
                     </div>
                     <div className="credits">
                         {/* <!-- All the links in the footer should remain intact. -->

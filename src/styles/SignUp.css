@@ -1,0 +1,175 @@
+.container.sign-up-contents {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    box-sizing: border-box;
+    margin-top: 0px;
+    margin-bottom: 20%;
+}
+
+
+
+.top-scroll-btn-container {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border: 0;
+    cursor: pointer;
+    background-color: white;
+
+}
+
+
+.top-scroll-btn-container:hover .bi.bi-arrow-up-short.top-scroll-btn {
+    transition: 20%;
+    color: rgb(103, 233, 192);
+}
+
+
+
+.bi.bi-arrow-up-short.top-scroll-btn {
+    display: inline;
+    font-size: 30px;
+    color: rgb(45, 201, 151);
+    transition: 0.5s ease;
+}
+
+
+
+.bi.bi-arrow-up-short.top-scroll-btn::before {
+    display: inline;
+}
+
+.sign-up-title-box {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+#sign-up-dae-jang-bu-logo {
+    width: 130px;
+    height: auto;
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+
+
+
+
+.container.sign-up-inner-contents {
+    margin-top: 35px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    box-sizing: border-box;
+}
+
+
+.container.sign-up-data-flex-box {
+
+    display: flex;
+    flex-direction: column;
+    width: 35%;
+
+}
+
+
+
+.create-user-name-input {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border: 1px solid #aaaaaa;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+
+}
+
+
+.create-user-email-input {
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid #aaaaaa;
+    border-left: 1px solid #aaaaaa;
+    border-right: 1px solid #aaaaaa;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+}
+
+
+.container.create-user-info-input-box {
+    margin-bottom: 50px;
+}
+
+
+
+.create-user-id-input {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border: 1px solid #aaaaaa;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+}
+
+
+.create-user-password-input {
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid #aaaaaa;
+    border-left: 1px solid #aaaaaa;
+    border-right: 1px solid #aaaaaa;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+}
+
+.create-user-password-check-input {
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid #aaaaaa;
+    border-left: 1px solid #aaaaaa;
+    border-right: 1px solid #aaaaaa;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+}
+
+
+#btn-sign-up {
+    width: 100%;
+    margin-top: 50px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: white;
+    transition: 0.5s;
+    border: 2px solid #cccccc;
+    cursor: pointer;
+    transition: 0.5s ease;
+}
+
+#btn-sign-up:hover {
+    background-color: #2dc997;
+    border-color: #2dc997
+}
+
+.invalid-input-span {
+    display: block;
+    font-size: 15px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    color: #cc0808
+}
+
